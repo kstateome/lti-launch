@@ -4,10 +4,14 @@ import edu.ksu.lti.launch.exception.InvalidInstanceException;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CanvasInstanceChecker {
-    private ConfigService configService;
+    private final ConfigService configService;
 
+    @Autowired
     public CanvasInstanceChecker(ConfigService configService) {
         this.configService = configService;
     }

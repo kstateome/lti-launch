@@ -28,11 +28,7 @@ import javax.servlet.http.HttpSession;
 public abstract class LtiLaunchController {
     private static final Logger LOG = Logger.getLogger(LtiLaunchController.class);
     @Autowired
-    private ConfigService configService;
     private CanvasInstanceChecker instanceChecker;
-    public LtiLaunchController() {
-        this.instanceChecker = new CanvasInstanceChecker(configService);
-    }
 
     @RequestMapping("/launch")
     public String ltiLaunch(Model model, @ModelAttribute LtiLaunchData ltiData) throws Exception {
