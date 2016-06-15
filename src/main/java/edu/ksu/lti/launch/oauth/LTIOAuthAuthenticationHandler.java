@@ -51,7 +51,7 @@ public class LTIOAuthAuthenticationHandler implements OAuthAuthenticationHandler
         LOG.debug("createAuthentication called");
         Collection<GrantedAuthority> authorities = new HashSet<>(authentication.getAuthorities());
         // attempt to create a user Authority
-        String username = request.getParameter("custom_canvas_user_login_id");//ltiRequest.getLtiUserId();
+        String username = request.getParameter("custom_canvas_user_login_id");
         LOG.debug("got user name while creating authentication: " + username);
         if (StringUtils.isBlank(username)) {
             username = authentication.getName();
