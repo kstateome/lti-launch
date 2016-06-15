@@ -5,6 +5,7 @@ import edu.ksu.lti.launch.oauth.LTIOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.oauth.LTIOAuthProviderProcessingFilter;
 import edu.ksu.lti.launch.oauth.MyOAuthNonceServices;
 import edu.ksu.lti.launch.service.ConfigService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -87,7 +88,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         protected void configure(HttpSecurity http) throws Exception {
             LOG.debug("configuring HttpSecurity");
             String canvasUrl = configRepo.getConfigValue("canvas_url");
-            if(canvasUrl == null) {
+            if (StringUtils.isBlank(canvasUrl)) {
                 throw new RuntimeException("Missing canvas_url config value");
             }
             http.requestMatchers()
