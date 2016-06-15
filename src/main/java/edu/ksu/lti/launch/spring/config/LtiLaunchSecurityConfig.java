@@ -76,9 +76,11 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         public void configure(WebSecurity web) throws Exception {
             //security debugging should not be used in production!
             //You probably won't even want it in development most of the time but I'll leave it here for reference.
+            /*
             if(LOG.isDebugEnabled()) {
-                //web.debug(true);
+                web.debug(true);
             }
+            */
         }
 
         @Override
