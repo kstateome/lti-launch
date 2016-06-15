@@ -36,10 +36,6 @@ import java.net.URI;
  * Common LTI application configuration. A few things that are done here:
  *  - Enable web security on the /launch URL to verify the oauth signature coming from Canvas
  *  - Enable content security policy headers so that browsers are happy
- *  - Set up the JSP based view resolver for spring
- *  - Component scanning for spring beans and JPA repositories
- * @author toby
- *
  */
 @Configuration
 @EnableWebMvcSecurity
