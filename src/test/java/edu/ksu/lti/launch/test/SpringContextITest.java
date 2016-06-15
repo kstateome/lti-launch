@@ -6,6 +6,7 @@ import edu.ksu.lti.launch.spring.config.TestApplicationConfig;
 import edu.ksu.lti.launch.spring.config.TestSpringConfig;
 import edu.ksu.lti.launch.spring.config.TestServiceConfig;
 import edu.ksu.lti.launch.controller.TestLtiLaunchController;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class SpringContextITest {
     @Test
     public void testSpringContext() {
         //The test will fail if the spring context is not setup appropriately.
+        Assert.assertNotNull("Expected testLtiLaunchController to be instantiated by Spring", testLtiLaunchController);
+        Assert.assertNotNull("Expected oauthController to be instantiated by Spring", oauthController);
     }
 
 }
