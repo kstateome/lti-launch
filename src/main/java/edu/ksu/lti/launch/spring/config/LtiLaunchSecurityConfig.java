@@ -66,7 +66,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         private OAuthProviderTokenServices oauthProviderTokenServices;
 
         @Autowired
-        private ConfigService configRepo;
+        private ConfigService configService;
 
         @PostConstruct
         public void init() {
@@ -87,7 +87,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             LOG.debug("configuring HttpSecurity");
-            String canvasUrl = configRepo.getConfigValue("canvas_url");
+            String canvasUrl = configService.getConfigValue("canvas_url");
             if (StringUtils.isBlank(canvasUrl)) {
                 throw new RuntimeException("Missing canvas_url config value");
             }
