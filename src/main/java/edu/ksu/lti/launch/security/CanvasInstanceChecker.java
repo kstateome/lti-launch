@@ -4,11 +4,13 @@ import edu.ksu.lti.launch.exception.InvalidInstanceException;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class CanvasInstanceChecker {
-    @Autowired
     private ConfigService configService;
+
+    public CanvasInstanceChecker(ConfigService configService) {
+        this.configService = configService;
+    }
 
     public void assertValidInstance(LtiSession ltiSession) {
         String launchUrl = removeTrailingSlash(ltiSession.getCanvasDomain());

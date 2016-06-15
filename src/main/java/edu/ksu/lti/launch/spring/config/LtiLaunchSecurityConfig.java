@@ -40,13 +40,9 @@ import java.net.URI;
  */
 @Configuration
 @EnableWebMvcSecurity
-@PropertySource("classpath:application.properties")
 public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = Logger.getLogger(LtiLaunchSecurityConfig.class);
-
-    @Autowired
-    Environment env;
 
     private static volatile ApplicationContext context;
 
