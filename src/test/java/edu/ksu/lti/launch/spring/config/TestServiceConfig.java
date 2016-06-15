@@ -22,7 +22,7 @@ public class TestServiceConfig {
             }
 
             @Override
-            public String updateToken(String eID, String accessToken) {
+            public String updateToken(String userId, String accessToken) {
                 return null;
             }
         };
