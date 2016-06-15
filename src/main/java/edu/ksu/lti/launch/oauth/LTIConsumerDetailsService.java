@@ -36,10 +36,14 @@ public class LTIConsumerDetailsService implements ConsumerDetailsService {
 
     private static final Logger LOG = Logger.getLogger(LTIConsumerDetailsService.class);
 
-    @Autowired
-    LtiLaunchKeyService ltiKeyService;
-    @Autowired
+    private LtiLaunchKeyService ltiKeyService;
     private String applicationName;
+
+    @Autowired
+    public LTIConsumerDetailsService(LtiLaunchKeyService ltiKeyService, String applicationName) {
+        this.ltiKeyService = ltiKeyService;
+        this.applicationName = applicationName;
+    }
 
     @Override
     public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {

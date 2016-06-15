@@ -3,11 +3,9 @@ package edu.ksu.lti.launch.controller;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.security.CanvasInstanceChecker;
-import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -27,11 +25,15 @@ import javax.servlet.http.HttpSession;
 @Controller
 public abstract class LtiLaunchController {
     private static final Logger LOG = Logger.getLogger(LtiLaunchController.class);
+    private final CanvasInstanceChecker instanceChecker;
+
     @Autowired
-    private CanvasInstanceChecker instanceChecker;
+    public LtiLaunchController(CanvasInstanceChecker canvasInstanceChecker) {
+        this.instanceChecker = canvasInstanceChecker;
+    }
 
     @RequestMapping("/launch")
-    public String ltiLaunch(Model model, @ModelAttribute LtiLaunchData ltiData) throws Exception {
+    public String ltiLaunch(@ModelAttribute LtiLaunchData ltiData) throws Exception {
         LOG.debug("launch!");
         String canvasCourseId = ltiData.getCustom_canvas_course_id();
         String eID = ltiData.getCustom_canvas_user_login_id();

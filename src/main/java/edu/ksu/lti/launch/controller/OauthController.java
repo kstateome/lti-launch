@@ -33,13 +33,16 @@ import java.util.UUID;
  */
 @Controller
 public class OauthController {
-
     private static final Logger LOG = Logger.getLogger(OauthController.class);
 
+    private final ConfigService configService;
+    private final OauthTokenService oauthTokenService;
+
     @Autowired
-    private ConfigService configService;
-    @Autowired
-    private OauthTokenService oauthTokenService;
+    private OauthController(ConfigService configService, OauthTokenService oauthTokenService) {
+        this.configService = configService;
+        this.oauthTokenService = oauthTokenService;
+    }
 
     @RequestMapping("/beginOauth")
     public String startOauth(HttpServletRequest request) throws NoLtiSessionException {
