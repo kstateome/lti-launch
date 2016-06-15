@@ -113,13 +113,8 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         this.context = context;
     }
 
-    public static ApplicationContext getContext() {
-        return context;
-    }
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         LOG.info("Context event caught");
-        //I was using this to insert records into the DB during testing. Probably not needed much any more
     }
 }
