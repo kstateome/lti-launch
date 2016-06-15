@@ -50,31 +50,12 @@ public class LTIOAuthAuthenticationHandler implements OAuthAuthenticationHandler
     public Authentication createAuthentication(HttpServletRequest request, ConsumerAuthentication authentication, OAuthAccessProviderToken authToken) {
         LOG.debug("createAuthentication called");
         Collection<GrantedAuthority> authorities = new HashSet<>(authentication.getAuthorities());
-        //LTIRequest ltiRequest = (LTIRequest) request.getAttribute(LTIRequest.class.getName());
-//        if (ltiRequest == null) {
-//            throw new IllegalStateException("Cannot create authentication for LTI because the LTIRequest is null");
-//        }
-
         // attempt to create a user Authority
         String username = request.getParameter("custom_canvas_user_login_id");//ltiRequest.getLtiUserId();
         LOG.debug("got user name while creating authentication: " + username);
         if (StringUtils.isBlank(username)) {
             username = authentication.getName();
         }
-
-        // set appropriate permissions for this user based on LTI data
-/*        if (ltiRequest.getUser() != null) {
-            authorities.add(userGA);
-        }*/
-//        if (ltiRequest.isRoleAdministrator()) {
-//            authorities.add(adminGA);
-//        }
-//        if (ltiRequest.isRoleInstructor()) {
-//            authorities.add(instructorGA);
-//        }
-//        if (ltiRequest.isRoleLearner()) {
-//            authorities.add(learnerGA);
-//        }
 
         // TODO store lti context and user id in the principal
         Principal principal = new MyOAuthAuthenticationHandler.NamedOAuthPrincipal(username, authorities,
