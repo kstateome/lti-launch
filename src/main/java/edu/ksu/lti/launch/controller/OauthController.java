@@ -37,15 +37,15 @@ public class OauthController {
     private static final Logger LOG = Logger.getLogger(OauthController.class);
 
     @Autowired
-    private ConfigService configRepo;
+    private ConfigService configService;
     @Autowired
-    private OauthTokenService tokenRepo;
+    private OauthTokenService oauthTokenService;
 
     @RequestMapping("/beginOauth")
     public String startOauth(HttpServletRequest request) throws NoLtiSessionException {
         LtiSession ltiSession = getLtiSession();
         LOG.debug("Sending user " + ltiSession.getEid() + " to get oauth token at " + ltiSession.getCanvasDomain());
-        String oauthClientId = configRepo.getConfigValue("oauth_client_id");
+        String oauthClientId = configService.getConfigValue("oauth_client_id");
         
         String randomUuid = UUID.randomUUID().toString();
         ltiSession.setOauthTokenRequestState(randomUuid);
@@ -87,9 +87,9 @@ public class OauthController {
         	throw new RuntimeException(msg);
         }
         
-        String canvasUrl = configRepo.getConfigValue("canvas_url");
-        String oauthClientId = configRepo.getConfigValue("oauth_client_id");
-        String oauthClientSecret = configRepo.getConfigValue("oauth_client_secret");
+        String canvasUrl = configService.getConfigValue("canvas_url");
+        String oauthClientId = configService.getConfigValue("oauth_client_id");
+        String oauthClientSecret = configService.getConfigValue("oauth_client_secret");
         if(oauthCode != null && !oauthCode.trim().isEmpty()) {
             try {
                 LOG.debug("got oauth code back: " + oauthCode);
@@ -132,11 +132,11 @@ public class OauthController {
                 String eID = ltiSession.getEid();
                 LOG.debug("access token for eid " + eID + ": " + accessToken);
                 
-                String token = tokenRepo.getOauthToken(eID);
+                String token = oauthTokenService.getOauthToken(eID);
                 if(token == null) {
-                    tokenRepo.createOauthToken(eID);
+                    oauthTokenService.createOauthToken(eID);
                 } else {
-                    tokenRepo.updateToken(eID, accessToken);
+                    oauthTokenService.updateToken(eID, accessToken);
                 }
                 
                 ltiSession.setCanvasOauthToken(token);
