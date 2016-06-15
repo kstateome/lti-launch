@@ -30,12 +30,9 @@ import java.io.IOException;
  */
 public class LTIOAuthProviderProcessingFilter extends ProtectedResourceProcessingFilter {
 
-    //LTIDataService ltiDataService;
 
     public LTIOAuthProviderProcessingFilter(LTIConsumerDetailsService oAuthConsumerDetailsService, MyOAuthNonceServices oAuthNonceServices, OAuthProcessingFilterEntryPoint oAuthProcessingFilterEntryPoint, LTIOAuthAuthenticationHandler oAuthAuthenticationHandler, OAuthProviderTokenServices oAuthProviderTokenServices) {
         super();
-        //assert ltiDataService != null;
-        //this.ltiDataService = ltiDataService;
         setAuthenticationEntryPoint(oAuthProcessingFilterEntryPoint);
         setAuthHandler(oAuthAuthenticationHandler);
         setConsumerDetailsService(oAuthConsumerDetailsService);
