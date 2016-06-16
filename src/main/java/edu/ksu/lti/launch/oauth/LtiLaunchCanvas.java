@@ -47,6 +47,7 @@ public class LtiLaunchCanvas {
      * Another approach would be to create this as a session scoped bean but the problem there is that
      * I need to share this session object across controllers (the OauthController to be specific) and
      * this breaks for some reason so I'm rolling my own session management here.
+     *
      * @return The current user's LTI session information
      * @throws NoLtiSessionException if the user does not have a valid LTI session.
      */
@@ -54,8 +55,8 @@ public class LtiLaunchCanvas {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = sra.getRequest();
         HttpSession session = req.getSession();
-        LtiSession ltiSession = (LtiSession)session.getAttribute(LtiSession.class.getName());
-        if(ltiSession == null) {
+        LtiSession ltiSession = (LtiSession) session.getAttribute(LtiSession.class.getName());
+        if (ltiSession == null) {
             throw new NoLtiSessionException();
         }
         return ltiSession;
@@ -63,7 +64,7 @@ public class LtiLaunchCanvas {
 
     public String ensureApiTokenPresent() throws OauthTokenRequiredException, NoLtiSessionException {
         LtiSession ltiSession = getLtiSession();
-        if(ltiSession.getCanvasOauthToken() != null) {
+        if (ltiSession.getCanvasOauthToken() != null) {
             return ltiSession.getCanvasOauthToken();
         }
 
@@ -84,9 +85,9 @@ public class LtiLaunchCanvas {
      * halfway into whatever it is that they do. This was initially the case
      * for the Scantron integration.
      *
-     * @throws NoLtiSessionException  When there isn't a valid ltiExcpetion
+     * @throws NoLtiSessionException       When there isn't a valid ltiExcpetion
      * @throws OauthTokenRequiredException when the oauthtoken isn't valid
-     * @throws IOException when exception communicating with canvas
+     * @throws IOException                 when exception communicating with canvas
      */
     public void validateOAuthToken() throws NoLtiSessionException, OauthTokenRequiredException, IOException {
         LtiSession ltiSession = getLtiSession();
