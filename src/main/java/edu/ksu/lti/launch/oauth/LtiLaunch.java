@@ -28,13 +28,13 @@ import java.net.URISyntaxException;
  */
 @Component
 @Scope("session")
-public class LtiLaunchCanvas {
-    private static final Logger LOG = Logger.getLogger(LtiLaunchCanvas.class);
+public class LtiLaunch {
+    private static final Logger LOG = Logger.getLogger(LtiLaunch.class);
     private final OauthTokenService oauthTokenService;
     private final String canvasHost;
 
     @Autowired
-    public LtiLaunchCanvas(OauthTokenService oauthTokenService, String canvasUrl) {
+    public LtiLaunch(OauthTokenService oauthTokenService, String canvasUrl) {
         this.oauthTokenService = oauthTokenService;
         this.canvasHost = canvasUrl;
     }
