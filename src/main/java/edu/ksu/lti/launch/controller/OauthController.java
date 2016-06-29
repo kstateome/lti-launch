@@ -136,8 +136,8 @@ public class OauthController {
                 LOG.debug("access token for eid " + eID + ": " + accessToken);
                 
                 String token = oauthTokenService.getOauthToken(eID);
-                if(token == null) {
-                    oauthTokenService.createOauthToken(eID);
+                if (token == null) {
+                    oauthTokenService.storeToken(eID, accessToken);
                 } else {
                     oauthTokenService.updateToken(eID, accessToken);
                 }
