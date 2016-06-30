@@ -30,14 +30,10 @@ import java.net.URISyntaxException;
 @Scope("session")
 public class LtiLaunch {
     private static final Logger LOG = Logger.getLogger(LtiLaunch.class);
-    private final OauthTokenService oauthTokenService;
-    private final String canvasHost;
-
     @Autowired
-    public LtiLaunch(OauthTokenService oauthTokenService, String canvasUrl) {
-        this.oauthTokenService = oauthTokenService;
-        this.canvasHost = canvasUrl;
-    }
+    private OauthTokenService oauthTokenService;
+    @Autowired
+    private String canvasDomain;
 
     /**
      * Get the LtiSession object from the HTTP session. It is put there up in the ltiLaunch method.
@@ -103,7 +99,7 @@ public class LtiLaunch {
         try {
             URI uri = new URIBuilder()
                     .setScheme("https")
-                    .setHost(canvasHost)
+                    .setHost(canvasDomain)
                     .setPath("/api/v1/users/self/todo")
                     .build();
             HttpGet canvasRequest = new HttpGet(uri);
