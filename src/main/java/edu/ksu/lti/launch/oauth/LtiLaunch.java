@@ -33,7 +33,7 @@ public class LtiLaunch {
     @Autowired
     private OauthTokenService oauthTokenService;
     @Autowired
-    private String canvasUrl;
+    private String canvasDomain;
 
     /**
      * Get the LtiSession object from the HTTP session. It is put there up in the ltiLaunch method.
@@ -99,7 +99,7 @@ public class LtiLaunch {
         try {
             URI uri = new URIBuilder()
                     .setScheme("https")
-                    .setHost(canvasUrl)
+                    .setHost(canvasDomain)
                     .setPath("/api/v1/users/self/todo")
                     .build();
             HttpGet canvasRequest = new HttpGet(uri);
