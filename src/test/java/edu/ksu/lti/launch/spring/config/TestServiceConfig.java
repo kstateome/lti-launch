@@ -17,7 +17,7 @@ public class TestServiceConfig {
             }
 
             @Override
-            public String createOauthToken(String userId) {
+            public String storeToken(String userId, String accessToken) {
                 return null;
             }
 

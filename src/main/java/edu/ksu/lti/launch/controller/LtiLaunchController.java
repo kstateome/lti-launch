@@ -5,9 +5,9 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.security.CanvasInstanceChecker;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -22,17 +22,12 @@ import javax.servlet.http.HttpSession;
  * that there is a valid ltiSession with an eID in it and can then serve
  * up its content.
  */
-@Controller
 public abstract class LtiLaunchController {
     private static final Logger LOG = Logger.getLogger(LtiLaunchController.class);
-    private final CanvasInstanceChecker instanceChecker;
-
     @Autowired
-    public LtiLaunchController(CanvasInstanceChecker canvasInstanceChecker) {
-        this.instanceChecker = canvasInstanceChecker;
-    }
+    private CanvasInstanceChecker instanceChecker;
 
-    @RequestMapping("/launch")
+    @RequestMapping(value = "/launch", method = RequestMethod.POST)
     public String ltiLaunch(@ModelAttribute LtiLaunchData ltiData) throws Exception {
         LOG.debug("launch!");
         String canvasCourseId = ltiData.getCustom_canvas_course_id();
