@@ -28,7 +28,9 @@ public abstract class LtiLaunchController {
     private CanvasInstanceChecker instanceChecker;
 
     @RequestMapping(value = "/launch", method = RequestMethod.POST)
-    public String ltiLaunch(@ModelAttribute LtiLaunchData ltiData) throws Exception {
+    public String ltiLaunch(@ModelAttribute LtiLaunchData ltiData, HttpSession session) throws Exception {
+        // Invalidate the session to clear out any old data
+        session.invalidate();
         LOG.debug("launch!");
         String canvasCourseId = ltiData.getCustom_canvas_course_id();
         String eID = ltiData.getCustom_canvas_user_login_id();
@@ -40,8 +42,8 @@ public abstract class LtiLaunchController {
         ltiSession.setCanvasDomain(ltiData.getCustom_canvas_api_domain());
         ltiSession.setLtiLaunchData(ltiData);
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpSession session = sra.getRequest().getSession();
-        session.setAttribute(LtiSession.class.getName(), ltiSession);
+        HttpSession newSession = sra.getRequest().getSession();
+        newSession.setAttribute(LtiSession.class.getName(), ltiSession);
         instanceChecker.assertValidInstance(ltiSession);
         LOG.info("launching LTI integration '" + getApplicationName() + "' from " + ltiSession.getCanvasDomain() + " for course: " + canvasCourseId + " as user " + eID);
         LOG.debug("forwarding user to: " + getInitialViewPath());
