@@ -120,7 +120,6 @@ public class OauthController {
                 out.close();
 
                 int responseCode = con.getResponseCode();
-                LOG.info("GOT Response code from token request");
                 LOG.debug("got response code from token request: " + responseCode);
                 LOG.debug("response message: " + con.getResponseMessage());
 
