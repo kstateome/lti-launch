@@ -59,7 +59,6 @@ public class LtiLaunch {
     }
 
     public String ensureApiTokenPresent() throws OauthTokenRequiredException, NoLtiSessionException {
-        LOG.info("ENSURING  Api Token Present");
         LtiSession ltiSession = getLtiSession();
         if (ltiSession.getCanvasOauthToken() != null) {
             return ltiSession.getCanvasOauthToken();
@@ -87,13 +86,11 @@ public class LtiLaunch {
      * @throws IOException                 when exception communicating with canvas
      */
     public void validateOAuthToken() throws NoLtiSessionException, OauthTokenRequiredException, IOException {
-        LOG.info("VALIDATING OAuth Token");
         LtiSession ltiSession = getLtiSession();
         HttpGet canvasRequest = createCanvasRequest(ltiSession);
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(canvasRequest);
         if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
-            LOG.info("Validation FAILED (OauthTokenRequiredException will be thrown)");
             throw new OauthTokenRequiredException();
         }
     }
