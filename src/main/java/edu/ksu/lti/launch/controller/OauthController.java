@@ -142,7 +142,7 @@ public class OauthController {
                     oauthTokenService.updateToken(eID, accessToken);
                 }
                 
-                ltiSession.setCanvasOauthToken(token);
+                ltiSession.setCanvasOauthToken(accessToken);
             }
             catch(IOException e) {
                 LOG.error("error getting oauth token", e);
