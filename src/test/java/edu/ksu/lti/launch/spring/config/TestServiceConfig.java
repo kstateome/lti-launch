@@ -25,6 +25,16 @@ public class TestServiceConfig {
             public String updateToken(String userId, String accessToken) {
                 return null;
             }
+
+            @Override
+            public String getRefreshToken(String userId) {
+                return null;
+            }
+
+            @Override
+            public String updateRefreshToken(String userId, String refreshToken) {
+                return null;
+            }
         };
     }
 

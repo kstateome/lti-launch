@@ -132,8 +132,10 @@ public class OauthController {
                 LOG.debug("content: " + content.toString());
                 JsonObject jobj = new Gson().fromJson(content.toString(), JsonObject.class);
                 String accessToken = jobj.get("access_token").getAsString();
+                String refreshToken = jobj.get("refresh_token").getAsString();
                 String eID = ltiSession.getEid();
                 LOG.debug("access token for eid " + eID + ": " + accessToken);
+                LOG.debug("refresh token for eid " + eID + ": " + refreshToken);
                 
                 String token = oauthTokenService.getOauthToken(eID);
                 if (token == null) {
@@ -143,6 +145,9 @@ public class OauthController {
                 }
                 
                 ltiSession.setCanvasOauthToken(accessToken);
+
+                oauthTokenService.updateRefreshToken(eID, refreshToken);
+
             }
             catch(IOException e) {
                 LOG.error("error getting oauth token", e);
