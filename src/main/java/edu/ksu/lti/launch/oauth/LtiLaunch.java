@@ -1,23 +1,17 @@
 package edu.ksu.lti.launch.oauth;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
+import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -28,11 +22,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
-import java.util.List;
 
 /*
  * This class was extracted from a subset of functions from LtiLaunchController
@@ -45,6 +36,8 @@ public class LtiLaunch {
     private OauthTokenService oauthTokenService;
     @Autowired
     private LtiLaunchKeyService launchKeyService;
+    @Autowired
+    private OauthTokenRefreshService oauthTokenRefreshService;
     @Autowired
     private String canvasDomain;
 
@@ -90,19 +83,8 @@ public class LtiLaunch {
     public void refreshOauthToken() throws NoLtiSessionException, IOException {
         LOG.debug("Refreshing token.");
         LtiSession ltiSession = getLtiSession();
-        HttpPost canvasRequest = createRefreshCanvasRequest(ltiSession);
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = client.execute(canvasRequest);
-        if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
-            LOG.warn("Refresh failed. Redirect to oauth flow");
-            throw new OauthTokenRequiredException();
-        } else {
-            JsonObject responseContent = new Gson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
-            String accessToken = responseContent.get("access_token").getAsString();
-            LOG.debug("Refreshed access token for eid " + ltiSession.getEid() + ": " + accessToken);
-            oauthTokenService.updateToken(ltiSession.getEid(), accessToken);
-            ltiSession.setCanvasOauthToken(accessToken);
-        }
+        String accessToken = oauthTokenRefreshService.getRefreshedOauthToken(ltiSession.getEid());
+        ltiSession.setCanvasOauthToken(accessToken);
         validateOAuthToken();
     }
 
@@ -145,27 +127,4 @@ public class LtiLaunch {
         }
     }
 
-    private HttpPost createRefreshCanvasRequest(LtiSession ltiSession) {
-        try {
-            URI uri = new URIBuilder()
-                    .setScheme("https")
-                    .setHost(canvasDomain)
-                    .setPath("/login/oauth2/token")
-                    .build();
-            HttpPost canvasRequest = new HttpPost(uri);
-            List<NameValuePair> paramList = new LinkedList<>();
-            paramList.add(new BasicNameValuePair("grant_type", "refresh_token"));
-            paramList.add(new BasicNameValuePair("client_id", launchKeyService.findOauthClientId()));
-            paramList.add(new BasicNameValuePair("client_secret", launchKeyService.findOauthClientSecret()));
-            paramList.add(new BasicNameValuePair("refresh_token", oauthTokenService.getRefreshToken(ltiSession.getEid())));
-            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramList);
-
-            canvasRequest.setEntity(entity);
-            return canvasRequest;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Invalid uri for canvas when requesting refresh oauthToken", e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Invalid encoding for canvas when requesting refresh oauthToken", e);
-        }
-    }
 }
