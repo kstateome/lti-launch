@@ -1,14 +1,13 @@
 package edu.ksu.lti.launch.oauth;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -16,7 +15,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -29,8 +27,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.html.parser.Entity;
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
@@ -125,7 +123,9 @@ public class LtiLaunch {
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(canvasRequest);
         if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
-            if (oauthTokenService.getRefreshToken(ltiSession.getEid()) == null) throw new OauthTokenRequiredException();
+            if (oauthTokenService.getRefreshToken(ltiSession.getEid()) == null) {
+                throw new OauthTokenRequiredException();
+            }
             refreshOauthToken();
         }
     }
