@@ -2,6 +2,7 @@ package edu.ksu.lti.launch.spring.config;
 
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
+import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -68,6 +69,11 @@ public class TestServiceConfig {
                 return null;
             }
         };
+    }
+
+    @Bean
+    public OauthTokenRefreshService oauthTokenRefreshService() {
+        return new OauthTokenRefreshService();
     }
 
 }

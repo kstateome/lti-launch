@@ -6,12 +6,8 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
 import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
+import edu.ksu.lti.launch.validator.OauthTokenValidator;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,8 +18,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /*
  * This class was extracted from a subset of functions from LtiLaunchController
@@ -38,6 +32,8 @@ public class LtiLaunch {
     private LtiLaunchKeyService launchKeyService;
     @Autowired
     private OauthTokenRefreshService oauthTokenRefreshService;
+    @Autowired
+    private OauthTokenValidator oauthTokenValidator;
     @Autowired
     private String canvasDomain;
 
@@ -96,35 +92,15 @@ public class LtiLaunch {
      * for the Scantron integration.
      *
      * @throws NoLtiSessionException       When there isn't a valid ltiExcpetion
-     * @throws OauthTokenRequiredException when the oauthtoken isn't valid
      * @throws IOException                 when exception communicating with canvas
      */
-    public void validateOAuthToken() throws NoLtiSessionException, OauthTokenRequiredException, IOException {
+    public void validateOAuthToken() throws NoLtiSessionException, IOException {
         LtiSession ltiSession = getLtiSession();
-        HttpGet canvasRequest = createCanvasRequest(ltiSession);
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = client.execute(canvasRequest);
-        if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
-            if (oauthTokenService.getRefreshToken(ltiSession.getEid()) == null) {
-                throw new OauthTokenRequiredException();
-            }
+        if (oauthTokenValidator.isValid(ltiSession)) {
             refreshOauthToken();
         }
     }
 
-    private HttpGet createCanvasRequest(LtiSession ltiSession) {
-        try {
-            URI uri = new URIBuilder()
-                    .setScheme("https")
-                    .setHost(canvasDomain)
-                    .setPath("/api/v1/users/self/todo")
-                    .build();
-            HttpGet canvasRequest = new HttpGet(uri);
-            canvasRequest.addHeader("Authorization", "Bearer " + ltiSession.getCanvasOauthToken());
-            return canvasRequest;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Invalid uri for canvas when validating oauthToken", e);
-        }
-    }
+
 
 }
