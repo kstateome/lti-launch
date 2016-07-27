@@ -45,6 +45,7 @@ public class LtiLaunchITest {
 
     @Before
     public void setup() throws IOException {
+        reset(fakeOauthTokenValidator, fakeLtiSessionService, fakeRefreshService);
         when(fakeOauthTokenValidator.isValid(any())).thenReturn(false);
         when(fakeOauthTokenValidator.isValid(argThat(new ValidTokenMatcher()))).thenReturn(true);
         when(fakeRefreshService.getRefreshedOauthToken(any())).thenReturn(VALID_TOKEN);
@@ -61,6 +62,18 @@ public class LtiLaunchITest {
 
         verify(fakeRefreshService, atLeastOnce()).getRefreshedOauthToken(FAKE_EID);
 
+    }
+
+    @Test
+    public void shouldNotCallRefreshTokenWhenTokenValid() throws NoLtiSessionException, IOException {
+        LtiSession session = new LtiSession();
+        session.setEid(FAKE_EID);
+        session.setCanvasOauthToken(VALID_TOKEN);
+        when(fakeLtiSessionService.getLtiSession()).thenReturn(session);
+
+        ltiLaunch.validateOAuthToken();
+
+        verify(fakeRefreshService, times(0)).getRefreshedOauthToken(any());
     }
 
 
