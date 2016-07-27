@@ -1,9 +1,9 @@
 package edu.ksu.lti.launch.spring.config;
 
-import edu.ksu.lti.launch.service.ConfigService;
-import edu.ksu.lti.launch.service.LtiLaunchKeyService;
-import edu.ksu.lti.launch.service.OauthTokenRefreshService;
-import edu.ksu.lti.launch.service.OauthTokenService;
+import edu.ksu.lti.launch.oauth.LtiLaunch;
+import edu.ksu.lti.launch.service.*;
+import edu.ksu.lti.launch.validator.OauthTokenValidator;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -73,7 +73,23 @@ public class TestServiceConfig {
 
     @Bean
     public OauthTokenRefreshService oauthTokenRefreshService() {
-        return new OauthTokenRefreshService();
+        return Mockito.mock(OauthTokenRefreshService.class);
     }
+
+    @Bean
+    public OauthTokenValidator fakeOauthTokenValidator() {
+        return Mockito.mock(OauthTokenValidator.class);
+    }
+
+    @Bean
+    public LtiSessionService fakeSessionService() {
+        return Mockito.mock(LtiSessionService.class);
+    }
+
+    @Bean
+    public LtiLaunch ltiLaunch() {
+        return new LtiLaunch();
+    }
+
 
 }
