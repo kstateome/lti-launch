@@ -77,12 +77,12 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public OauthTokenValidator fakeOauthTokenValidator() {
+    public OauthTokenValidator mockOauthTokenValidator() {
         return Mockito.mock(OauthTokenValidator.class);
     }
 
     @Bean
-    public LtiSessionService fakeSessionService() {
+    public LtiSessionService mockSessionService() {
         return Mockito.mock(LtiSessionService.class);
     }
 

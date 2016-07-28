@@ -26,15 +26,11 @@ public class LtiLaunch {
     @Autowired
     private OauthTokenService oauthTokenService;
     @Autowired
-    private LtiLaunchKeyService launchKeyService;
-    @Autowired
     private OauthTokenRefreshService oauthTokenRefreshService;
     @Autowired
     private OauthTokenValidator oauthTokenValidator;
     @Autowired
     private LtiSessionService ltiSessionService;
-    @Autowired
-    private String canvasDomain;
 
 
 
