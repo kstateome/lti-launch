@@ -1,17 +1,14 @@
 package edu.ksu.lti.launch.service;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
+import edu.ksu.lti.launch.util.CanvasResponseParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,9 +20,6 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by alexanda on 7/26/16.
- */
 @Service
 public class OauthTokenRefreshService {
 
@@ -37,18 +31,23 @@ public class OauthTokenRefreshService {
     private OauthTokenService oauthTokenService;
     @Autowired
     private String canvasDomain;
+    @Autowired
+    private HttpClient client;
+    @Autowired
+    private CanvasResponseParser canvasResponseParser;
 
     public String getRefreshedOauthToken(String eid) throws IOException {
         HttpPost canvasRequest = createRefreshCanvasRequest(eid);
-        HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = client.execute(canvasRequest);
 
         if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
             LOG.warn("Refresh failed. Redirect to oauth flow");
             throw new OauthTokenRequiredException();
+        } else if (response.getStatusLine().getStatusCode() != 200) {
+            String tokenUri = canvasRequest.getURI().toString();
+            throw new IOException(tokenUri + " returned a status of " + response.getStatusLine().getStatusCode());
         } else {
-            JsonObject responseContent = new Gson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
-            String accessToken = responseContent.get("access_token").getAsString();
+            String accessToken = canvasResponseParser.parseToken(response);
             LOG.debug("Refreshed access token for eid " + eid + ": " + accessToken);
             oauthTokenService.updateToken(eid, accessToken);
             return accessToken;

@@ -72,21 +72,6 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public OauthTokenRefreshService oauthTokenRefreshService() {
-        return Mockito.mock(OauthTokenRefreshService.class);
-    }
-
-    @Bean
-    public OauthTokenValidator mockOauthTokenValidator() {
-        return Mockito.mock(OauthTokenValidator.class);
-    }
-
-    @Bean
-    public LtiSessionService mockSessionService() {
-        return Mockito.mock(LtiSessionService.class);
-    }
-
-    @Bean
     public LtiLaunch ltiLaunch() {
         return new LtiLaunch();
     }
