@@ -28,16 +28,14 @@ public class OauthTokenRefreshService {
     @Autowired
     private LtiLaunchKeyService launchKeyService;
     @Autowired
-    private OauthTokenService oauthTokenService;
-    @Autowired
     private String canvasDomain;
     @Autowired
     private HttpClient client;
     @Autowired
     private CanvasResponseParser canvasResponseParser;
 
-    public String getRefreshedOauthToken(String eid) throws IOException {
-        HttpPost canvasRequest = createRefreshCanvasRequest(eid);
+    public String getRefreshedOauthToken(String refreshToken) throws IOException {
+        HttpPost canvasRequest = createRefreshCanvasRequest(refreshToken);
         HttpResponse response = client.execute(canvasRequest);
 
         if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
@@ -47,14 +45,12 @@ public class OauthTokenRefreshService {
             String tokenUri = canvasRequest.getURI().toString();
             throw new IOException(tokenUri + " returned a status of " + response.getStatusLine().getStatusCode());
         } else {
-            String accessToken = canvasResponseParser.parseToken(response);
-            LOG.debug("Refreshed access token for eid " + eid + ": " + accessToken);
-            oauthTokenService.updateToken(eid, accessToken);
-            return accessToken;
+            return canvasResponseParser.parseToken(response);
+
         }
     }
 
-    private HttpPost createRefreshCanvasRequest(String eid) {
+    private HttpPost createRefreshCanvasRequest(String refreshToken) {
         try {
             URI uri = new URIBuilder()
                     .setScheme("https")
@@ -66,7 +62,7 @@ public class OauthTokenRefreshService {
             paramList.add(new BasicNameValuePair("grant_type", "refresh_token"));
             paramList.add(new BasicNameValuePair("client_id", launchKeyService.findOauthClientId()));
             paramList.add(new BasicNameValuePair("client_secret", launchKeyService.findOauthClientSecret()));
-            paramList.add(new BasicNameValuePair("refresh_token", oauthTokenService.getRefreshToken(eid)));
+            paramList.add(new BasicNameValuePair("refresh_token", refreshToken));
             UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramList);
 
             canvasRequest.setEntity(entity);

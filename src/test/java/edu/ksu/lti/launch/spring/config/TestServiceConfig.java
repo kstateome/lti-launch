@@ -1,9 +1,9 @@
 package edu.ksu.lti.launch.spring.config;
 
 import edu.ksu.lti.launch.oauth.LtiLaunch;
-import edu.ksu.lti.launch.service.*;
-import edu.ksu.lti.launch.validator.OauthTokenValidator;
-import org.mockito.Mockito;
+import edu.ksu.lti.launch.service.ConfigService;
+import edu.ksu.lti.launch.service.LtiLaunchKeyService;
+import edu.ksu.lti.launch.service.OauthTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,11 +12,6 @@ public class TestServiceConfig {
     @Bean
     public OauthTokenService fakeOauthTokenService() {
         return new OauthTokenService() {
-            @Override
-            public String getOauthToken(String userId) {
-                return null;
-            }
-
             @Override
             public String storeToken(String userId, String accessToken) {
                 return null;
@@ -32,10 +27,6 @@ public class TestServiceConfig {
                 return null;
             }
 
-            @Override
-            public String updateRefreshToken(String userId, String refreshToken) {
-                return null;
-            }
         };
     }
 

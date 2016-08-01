@@ -2,7 +2,6 @@ package edu.ksu.lti.launch.service;
 
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.util.CanvasResponseParser;
-import oracle.jrockit.jfr.StringConstantPool;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -58,15 +57,6 @@ public class OauthTokenRefreshServiceUTest {
     }
 
     @Test
-    public void tokenUpdatedWhenResponseIsOk() throws Exception  {
-        setupOkResponse();
-
-        oauthTokenRefreshService.getRefreshedOauthToken(USER_EID);
-
-        verify(mockOauthTokenService).updateToken(USER_EID, TOKEN);
-    }
-
-    @Test
     public void correctTokenReturnedWhenResponseIsOk() throws Exception {
         setupOkResponse();
 
@@ -95,7 +85,6 @@ public class OauthTokenRefreshServiceUTest {
 
         verify(mockLtiLaunchKeyService).findOauthClientId();
         verify(mockLtiLaunchKeyService).findOauthClientSecret();
-        verify(mockOauthTokenService).getRefreshToken(USER_EID);
     }
 
     @Test(expected = OauthTokenRequiredException.class)

@@ -1,6 +1,7 @@
 package edu.ksu.lti.launch.model;
 
 import edu.ksu.lti.launch.controller.LtiLaunchController;
+import edu.ksu.lti.launch.oauth.OauthToken;
 
 /**
  * Class to hold LTI session data. It is created and populated when the LTI application is first
@@ -19,7 +20,7 @@ public class LtiSession {
     private String eid;
     private String canvasCourseId;
     private String canvasDomain;
-    private String oauthToken;
+    private OauthToken oauthToken;
     private String oauthTokenRequestState;
     private LtiLaunchData ltiLaunchData;
 
@@ -49,10 +50,10 @@ public class LtiSession {
     }
     
     public String getCanvasOauthToken() {
-    	return oauthToken;
+    	return oauthToken.getApiToken();
     }
     
-    public void setCanvasOauthToken(String oauthToken) {
+    public void setCanvasOauthToken(OauthToken oauthToken) {
     	this.oauthToken = oauthToken;
     }
 

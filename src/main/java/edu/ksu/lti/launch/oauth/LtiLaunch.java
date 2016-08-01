@@ -3,12 +3,10 @@ package edu.ksu.lti.launch.oauth;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.model.LtiSession;
-import edu.ksu.lti.launch.service.LtiLaunchKeyService;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import edu.ksu.lti.launch.validator.OauthTokenValidator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -39,23 +37,17 @@ public class LtiLaunch {
         if (ltiSession.getCanvasOauthToken() != null) {
             return ltiSession.getCanvasOauthToken();
         }
-
-        String eid = ltiSession.getEid();
-        String token = oauthTokenService.getOauthToken(eid);
-        if (StringUtils.isBlank(token)) {
-            LOG.info("no API key for user. Sending to oauth flow: " + eid);
+        if (ltiSession.getEid() != null) {
+            String refreshToken = oauthTokenService.getRefreshToken(ltiSession.getEid());
+            if (refreshToken != null) {
+                ltiSession.setCanvasOauthToken(new OauthToken(refreshToken, oauthTokenRefreshService));
+                return ltiSession.getCanvasOauthToken();
+            }
             throw new OauthTokenRequiredException();
         }
-        ltiSession.setCanvasOauthToken(token);
-        return token;
-    }
+        // If the eid is null, we need to get a new session.
+        throw new NoLtiSessionException();
 
-    public void refreshOauthToken() throws NoLtiSessionException, IOException {
-        LOG.debug("Refreshing token.");
-        LtiSession ltiSession = ltiSessionService.getLtiSession();
-        String accessToken = oauthTokenRefreshService.getRefreshedOauthToken(ltiSession.getEid());
-        ltiSession.setCanvasOauthToken(accessToken);
-        validateOAuthToken();
     }
 
     /**
@@ -71,7 +63,7 @@ public class LtiLaunch {
     public void validateOAuthToken() throws NoLtiSessionException, IOException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         if (!oauthTokenValidator.isValid(ltiSession)) {
-            refreshOauthToken();
+            throw new OauthTokenRequiredException();
         }
     }
 

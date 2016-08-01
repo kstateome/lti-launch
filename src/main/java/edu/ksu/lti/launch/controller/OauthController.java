@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiSession;
+import edu.ksu.lti.launch.oauth.OauthToken;
 import edu.ksu.lti.launch.service.ConfigService;
+import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +39,13 @@ public class OauthController {
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;
+    private final OauthTokenRefreshService refreshService;
 
     @Autowired
-    private OauthController(ConfigService configService, OauthTokenService oauthTokenService) {
+    private OauthController(ConfigService configService, OauthTokenService oauthTokenService, OauthTokenRefreshService refreshService) {
         this.configService = configService;
         this.oauthTokenService = oauthTokenService;
+        this.refreshService = refreshService;
     }
 
     @RequestMapping("/beginOauth")
@@ -137,16 +141,13 @@ public class OauthController {
                 LOG.debug("access token for eid " + eID + ": " + accessToken);
                 LOG.debug("refresh token for eid " + eID + ": " + refreshToken);
                 
-                String token = oauthTokenService.getOauthToken(eID);
+                String token = oauthTokenService.getRefreshToken(eID);
                 if (token == null) {
-                    oauthTokenService.storeToken(eID, accessToken);
+                    oauthTokenService.storeToken(eID, refreshToken);
                 } else {
-                    oauthTokenService.updateToken(eID, accessToken);
+                    oauthTokenService.updateToken(eID, refreshToken);
                 }
-                
-                ltiSession.setCanvasOauthToken(accessToken);
-
-                oauthTokenService.updateRefreshToken(eID, refreshToken);
+                ltiSession.setCanvasOauthToken(new OauthToken(oauthTokenService.getRefreshToken(eID), refreshService));
 
             }
             catch(IOException e) {
