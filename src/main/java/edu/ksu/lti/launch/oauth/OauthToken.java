@@ -34,10 +34,10 @@ public class OauthToken {
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new IllegalArgumentException("Refresh token may not be null or empty.");
         }
-        this.refreshToken = refreshToken;
         if (refreshService == null) {
             throw new IllegalArgumentException("Refresh service may not be null");
         }
+        this.refreshToken = refreshToken;
         this.refreshService = refreshService;
         init();
     }
@@ -64,9 +64,8 @@ public class OauthToken {
      * Checks whether this token is expired
      * @return true if the token is older than the timeout, else false
      */
-    private boolean isExpired() {
+    public boolean isExpired() {
         return (new Date().getTime() - lastUpdated.getTime()) >= TIMEOUT;
-
     }
 
     /**
@@ -76,11 +75,11 @@ public class OauthToken {
         LOG.debug("Refreshing oauth token");
         try {
             this.apiToken = refreshService.getRefreshedOauthToken(refreshToken);
+            this.lastUpdated = new Date();
         } catch (IOException e) {
             // The chances of this happening are rather slim, so only basic handling for now
             LOG.error("Unable to refresh token with IOException: " + e.getMessage());
             throw new RefreshFailedException("Unable to refresh token", e);
         }
-        this.lastUpdated = new Date();
     }
 }
