@@ -3,10 +3,14 @@ package edu.ksu.lti.launch.test;
 
 import edu.ksu.lti.launch.controller.OauthController;
 import edu.ksu.lti.launch.oauth.LtiLaunch;
+import edu.ksu.lti.launch.service.OauthTokenRefreshService;
+import edu.ksu.lti.launch.service.OauthTokenService;
 import edu.ksu.lti.launch.spring.config.TestApplicationConfig;
 import edu.ksu.lti.launch.spring.config.TestSpringConfig;
 import edu.ksu.lti.launch.spring.config.TestServiceConfig;
 import edu.ksu.lti.launch.controller.TestLtiLaunchController;
+import org.apache.http.client.HttpClient;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {TestSpringConfig.class, TestServiceConfig.class, TestApplicationConfig.class})
+@ContextConfiguration(classes = {TestSpringConfig.class, TestApplicationConfig.class})
 public class SpringContextITest {
     @Autowired
     private TestLtiLaunchController testLtiLaunchController;
@@ -31,6 +35,14 @@ public class SpringContextITest {
     private OauthController oauthController;
     @Autowired
     private LtiLaunch ltiLaunch;
+    @Autowired
+    private OauthTokenRefreshService oauthTokenRefreshService;
+    @Autowired
+    private OauthTokenService oauthTokenService;
+    @Autowired
+    private HttpClient httpClient;
+    @Autowired
+    private HttpClient httpClient2;
 
     @Test
     public void testSpringContext() {
@@ -38,6 +50,13 @@ public class SpringContextITest {
         assertNotNull("Expected testLtiLaunchController to be instantiated by Spring", testLtiLaunchController);
         assertNotNull("Expected oauthController to be instantiated by Spring", oauthController);
         assertNotNull("Expected ltiLaunchCanvas to be instantiated by Spring", ltiLaunch);
+        assertNotNull("Expected oauthTokenRefreshService to be instantiated by Spring", oauthTokenRefreshService);
+        assertNotNull("Expected oauthTokenService to be instantiated by Spring", oauthTokenService);
+    }
+
+    @Test
+    public void httpClientBeanIsThreadSafe() {
+        Assert.assertTrue("Two classes share the same instance of httpClient. Bean is probably declared as singleton.", httpClient != httpClient2);
     }
 
 }

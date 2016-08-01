@@ -1,5 +1,6 @@
 package edu.ksu.lti.launch.spring.config;
 
+import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
 import edu.ksu.lti.launch.service.OauthTokenService;
@@ -12,11 +13,6 @@ public class TestServiceConfig {
     public OauthTokenService fakeOauthTokenService() {
         return new OauthTokenService() {
             @Override
-            public String getOauthToken(String userId) {
-                return null;
-            }
-
-            @Override
             public String storeToken(String userId, String accessToken) {
                 return null;
             }
@@ -25,6 +21,12 @@ public class TestServiceConfig {
             public String updateToken(String userId, String accessToken) {
                 return null;
             }
+
+            @Override
+            public String getRefreshToken(String userId) {
+                return null;
+            }
+
         };
     }
 
@@ -42,7 +44,28 @@ public class TestServiceConfig {
 
     @Bean
     public LtiLaunchKeyService fakeLtiLaunchKeyService() {
-        return key -> null;
+        return new LtiLaunchKeyService() {
+            @Override
+            public String findSecretForKey(String key) {
+                return null;
+            }
+
+            @Override
+            public String findOauthClientId() {
+                return null;
+            }
+
+            @Override
+            public String findOauthClientSecret() {
+                return null;
+            }
+        };
     }
+
+    @Bean
+    public LtiLaunch ltiLaunch() {
+        return new LtiLaunch();
+    }
+
 
 }
