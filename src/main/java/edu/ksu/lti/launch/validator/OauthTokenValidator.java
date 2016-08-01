@@ -47,7 +47,7 @@ public class OauthTokenValidator {
                     .setPath("/api/v1/users/self/todo")
                     .build();
             HttpGet canvasRequest = new HttpGet(uri);
-            canvasRequest.addHeader("Authorization", "Bearer " + ltiSession.getCanvasOauthToken());
+            canvasRequest.addHeader("Authorization", "Bearer " + ltiSession.getApiToken());
             return canvasRequest;
         } catch (URISyntaxException e) {
             throw new RuntimeException("Invalid uri for canvas when validating oauthToken", e);

@@ -34,14 +34,14 @@ public class LtiLaunch {
 
     public String ensureApiTokenPresent() throws OauthTokenRequiredException, NoLtiSessionException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-        if (ltiSession.getCanvasOauthToken() != null) {
-            return ltiSession.getCanvasOauthToken();
+        if (ltiSession.getOauthToken() != null) {
+            return ltiSession.getApiToken();
         }
         if (ltiSession.getEid() != null) {
             String refreshToken = oauthTokenService.getRefreshToken(ltiSession.getEid());
             if (refreshToken != null) {
-                ltiSession.setCanvasOauthToken(new OauthToken(refreshToken, oauthTokenRefreshService));
-                return ltiSession.getCanvasOauthToken();
+                ltiSession.setOauthToken(new OauthToken(refreshToken, oauthTokenRefreshService));
+                return ltiSession.getApiToken();
             }
             throw new OauthTokenRequiredException();
         }

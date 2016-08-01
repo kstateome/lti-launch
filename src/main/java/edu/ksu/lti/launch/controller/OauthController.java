@@ -147,7 +147,7 @@ public class OauthController {
                 } else {
                     oauthTokenService.updateToken(eID, refreshToken);
                 }
-                ltiSession.setCanvasOauthToken(new OauthToken(oauthTokenService.getRefreshToken(eID), refreshService));
+                ltiSession.setOauthToken(new OauthToken(oauthTokenService.getRefreshToken(eID), refreshService));
 
             }
             catch(IOException e) {

@@ -48,13 +48,19 @@ public class LtiSession {
     public String getEid() {
         return eid;
     }
-    
-    public String getCanvasOauthToken() {
+
+    // Convenience method
+    public String getApiToken() {
     	return oauthToken.getApiToken();
     }
     
-    public void setCanvasOauthToken(OauthToken oauthToken) {
+    public void setOauthToken(OauthToken oauthToken) {
     	this.oauthToken = oauthToken;
+    }
+
+    // Preferably, use the convenience method above.
+    public OauthToken getOauthToken() {
+        return this.oauthToken;
     }
 
     public void setCanvasCourseId(String canvasCourseId) {

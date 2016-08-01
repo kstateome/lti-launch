@@ -73,6 +73,7 @@ public class OauthToken {
      * Refreshes the apiToken contained in this object
      */
     private void refresh() {
+        LOG.warn("Refreshing oauth token");
         try {
             this.apiToken = refreshService.getRefreshedOauthToken(refreshToken);
         } catch (IOException e) {
