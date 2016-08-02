@@ -11,9 +11,9 @@
     <name>lti-launch</name>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/kstateome/canvas-lti.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/kstateome/canvas-lti.git</developerConnection>
-        <url>https://github.com/kstateome/canvas-lti</url>
+        <connection>scm:git:ssh://git@github.com/kstateome/lti-launch.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/kstateome/lti-launch.git</developerConnection>
+        <url>https://github.com/kstateome/lti-launch</url>
         <tag>1.2.18</tag>
     </scm>
 
