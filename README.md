@@ -10,9 +10,9 @@ LTI Launch is a project designed to assist in the development of LTI application
 - Apache HTTP Client
 
 ### Usage
-The LTI Launch project provides a number of interfaces that must be implemented in order for it to function in any given project, as well as a few beans that must be candidates for Spring Autowiring in the LTI application that wishes to use it. In order to begin this process, you will first need to add the project as a Maven dependency.
+The LTI Launch project provides a number of interfaces that must be implemented in order for it to function in any given project, as well as a few beans that must be candidates for Spring Autowiring in the LTI application that wishes to use it. In order to begin this process, you will first need to add lti-launch as a Maven dependency.
 
-After adding the project as a Maven dependency, you will need to first implement each of the required Interfaces, which can be found in the `edu.ksu.lti.launch.service` package:
+After adding the project as a Maven dependency, you will need to implement each of the required Interfaces, which can be found in the `edu.ksu.lti.launch.service` package:
 - ConfigService
     - This interface must be able to supply each of the following config keys:
         - `canvas_url` - The first valid base canvas url this instance can talk to (e.g. "https://canvas.k-state.edu")
@@ -22,7 +22,7 @@ After adding the project as a Maven dependency, you will need to first implement
 - LtiLaunchKeyService
 - OauthTokenService
 
-The following Beans must be made available for Autowiring by the LTI application:
+The following Bean must be made available for Autowiring by the LTI application:
 - `canvasDomain` A string defining the primary canvasDomain that will be used for API calls and the OAuth exchange (most often, this should be the same as `canvas_url` above)
 
 To utilize the LTI launch capabilities of this application after this point, you simply need to create a Spring Controller inside of your Spring application that extends `LtiLaunchController`, an abstract class that handles most of the LTI exchange.
