@@ -16,7 +16,7 @@ After adding the project as a Maven dependency, you will need to implement each 
 - ConfigService
     - This interface must be able to supply each of the following config keys:
         - `canvas_url` - The first valid base canvas url this instance can talk to (e.g. "https://canvas.k-state.edu")
-        - `canvas_url_2` - The second base canvas url this instance can talk to, or the first canvas_url if there is no valid second instance
+        - `canvas_url_2` - The second base canvas url this instance can talk to. It can be blank if there is no second canvas url.
         - `oauth_client_id` - The OAuth Client ID for the application
         - `oauth_client_secret` - The OAuth Client Secret for this application
 - LtiLaunchKeyService
