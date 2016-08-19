@@ -6,7 +6,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,9 +18,11 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 
@@ -38,13 +43,15 @@ public class OauthTokenRefreshServiceUTest {
     @Mock
     private OauthTokenService mockOauthTokenService;
     @Mock
-    private HttpClient mockHttpClient;
+    private HttpClientBuilder mockHttpClientBuilder;
     @Mock
-    private HttpResponse mockHttpResponse;
+    private CloseableHttpResponse mockHttpResponse;
     @Mock
     private CanvasResponseParser canvasResponseParser;
     @InjectMocks
     private OauthTokenRefreshService oauthTokenRefreshService;
+    @Mock
+    private CloseableHttpClient mockHttpClient;
 
     @Before
     public void setup() {
@@ -53,6 +60,7 @@ public class OauthTokenRefreshServiceUTest {
 
     @Before
     public void setupMocks() throws Exception {
+        when(mockHttpClientBuilder.build()).thenReturn(mockHttpClient);
         when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
     }
 

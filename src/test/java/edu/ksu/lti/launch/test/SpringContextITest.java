@@ -10,6 +10,7 @@ import edu.ksu.lti.launch.spring.config.TestSpringConfig;
 import edu.ksu.lti.launch.spring.config.TestServiceConfig;
 import edu.ksu.lti.launch.controller.TestLtiLaunchController;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +41,9 @@ public class SpringContextITest {
     @Autowired
     private OauthTokenService oauthTokenService;
     @Autowired
-    private HttpClient httpClient;
+    private HttpClientBuilder httpClientBuilder;
     @Autowired
-    private HttpClient httpClient2;
+    private HttpClientBuilder httpClientBuilder2;
 
     @Test
     public void testSpringContext() {
@@ -56,7 +57,7 @@ public class SpringContextITest {
 
     @Test
     public void httpClientBeanIsThreadSafe() {
-        Assert.assertTrue("Two classes share the same instance of httpClient. Bean is probably declared as singleton.", httpClient != httpClient2);
+        Assert.assertTrue("Two classes share the same instance of httpClientBuilder. Bean is probably declared as singleton.", httpClientBuilder != httpClientBuilder2);
     }
 
 }
