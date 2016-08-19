@@ -8,6 +8,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,17 @@ public class OauthTokenRefreshService {
     @Autowired
     private String canvasDomain;
     @Autowired
-    private HttpClient client;
+    private HttpClientBuilder clientBuilder;
     @Autowired
     private CanvasResponseParser canvasResponseParser;
 
     public String getRefreshedOauthToken(String refreshToken) throws IOException {
         HttpPost canvasRequest = createRefreshCanvasRequest(refreshToken);
-        HttpResponse response = client.execute(canvasRequest);
+        HttpResponse response = clientBuilder.build().execute(canvasRequest);
 
-        if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
+        if (response.getStatusLine() == null
+                || response.getStatusLine().getStatusCode() == 401
+                || response.getStatusLine().getStatusCode() == 400) {
             LOG.warn("Refresh failed. Redirect to oauth flow");
             throw new OauthTokenRequiredException();
         } else if (response.getStatusLine().getStatusCode() != 200) {
