@@ -39,7 +39,9 @@ public class OauthTokenRefreshService {
         HttpPost canvasRequest = createRefreshCanvasRequest(refreshToken);
         HttpResponse response = clientBuilder.build().execute(canvasRequest);
 
-        if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
+        if (response.getStatusLine() == null
+                || response.getStatusLine().getStatusCode() == 401
+                || response.getStatusLine().getStatusCode() == 400) {
             LOG.warn("Refresh failed. Redirect to oauth flow");
             throw new OauthTokenRequiredException();
         } else if (response.getStatusLine().getStatusCode() != 200) {
