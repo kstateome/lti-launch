@@ -40,10 +40,6 @@ public class SpringContextITest {
     private OauthTokenRefreshService oauthTokenRefreshService;
     @Autowired
     private OauthTokenService oauthTokenService;
-    @Autowired
-    private HttpClientBuilder httpClientBuilder;
-    @Autowired
-    private HttpClientBuilder httpClientBuilder2;
 
     @Test
     public void testSpringContext() {
@@ -53,11 +49,6 @@ public class SpringContextITest {
         assertNotNull("Expected ltiLaunchCanvas to be instantiated by Spring", ltiLaunch);
         assertNotNull("Expected oauthTokenRefreshService to be instantiated by Spring", oauthTokenRefreshService);
         assertNotNull("Expected oauthTokenService to be instantiated by Spring", oauthTokenService);
-    }
-
-    @Test
-    public void httpClientBeanIsThreadSafe() {
-        Assert.assertTrue("Two classes share the same instance of httpClientBuilder. Bean is probably declared as singleton.", httpClientBuilder != httpClientBuilder2);
     }
 
 }

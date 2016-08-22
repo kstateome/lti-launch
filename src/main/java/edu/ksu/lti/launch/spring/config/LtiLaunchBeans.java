@@ -13,10 +13,4 @@ public class LtiLaunchBeans {
         return new CanvasResponseParser();
     }
 
-
-    @Bean
-    @Scope("prototype")
-    public HttpClientBuilder httpClientBuilder() {
-        return HttpClientBuilder.create();
-    }
 }
