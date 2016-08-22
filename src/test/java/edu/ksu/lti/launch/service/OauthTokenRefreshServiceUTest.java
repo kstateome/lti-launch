@@ -2,15 +2,14 @@ package edu.ksu.lti.launch.service;
 
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.util.CanvasResponseParser;
-import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,15 +17,14 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,13 +41,11 @@ public class OauthTokenRefreshServiceUTest {
     @Mock
     private OauthTokenService mockOauthTokenService;
     @Mock
-    private HttpClientBuilder mockHttpClientBuilder;
-    @Mock
     private CloseableHttpResponse mockHttpResponse;
     @Mock
     private CanvasResponseParser canvasResponseParser;
     @InjectMocks
-    private OauthTokenRefreshService oauthTokenRefreshService;
+    private OauthTokenRefreshServiceWithMockedHttpClient oauthTokenRefreshService;
     @Mock
     private CloseableHttpClient mockHttpClient;
 
@@ -60,8 +56,17 @@ public class OauthTokenRefreshServiceUTest {
 
     @Before
     public void setupMocks() throws Exception {
-        when(mockHttpClientBuilder.build()).thenReturn(mockHttpClient);
         when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
+    }
+
+    @After
+    public void httpClientConnectionIsClosed() throws Exception {
+        verify(mockHttpClient, times(1)).close();
+    }
+
+    @After
+    public void httpResponseIsClosed() throws Exception {
+        verify(mockHttpResponse, times(1)).close();
     }
 
     @Test
@@ -151,4 +156,16 @@ public class OauthTokenRefreshServiceUTest {
     }
 
 
+}
+
+/*
+ * Http client should be created within the OauthTokenRefreshService but we need to not create a new one for testing
+ */
+class OauthTokenRefreshServiceWithMockedHttpClient extends OauthTokenRefreshService {
+    private CloseableHttpClient mockedHttpClient;
+
+    @Override
+    protected CloseableHttpClient createHttpClient() {
+        return mockedHttpClient;
+    }
 }
