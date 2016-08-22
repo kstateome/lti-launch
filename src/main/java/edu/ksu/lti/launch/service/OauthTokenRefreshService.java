@@ -6,8 +6,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,23 +33,23 @@ public class OauthTokenRefreshService {
     @Autowired
     private String canvasDomain;
     @Autowired
-    private HttpClient client;
-    @Autowired
     private CanvasResponseParser canvasResponseParser;
 
     public String getRefreshedOauthToken(String refreshToken) throws IOException {
         HttpPost canvasRequest = createRefreshCanvasRequest(refreshToken);
-        HttpResponse response = client.execute(canvasRequest);
-
-        if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() == 401) {
-            LOG.warn("Refresh failed. Redirect to oauth flow");
-            throw new OauthTokenRequiredException();
-        } else if (response.getStatusLine().getStatusCode() != 200) {
-            String tokenUri = canvasRequest.getURI().toString();
-            throw new IOException(tokenUri + " returned a status of " + response.getStatusLine().getStatusCode());
-        } else {
-            return canvasResponseParser.parseToken(response);
-
+        try (CloseableHttpClient httpClient = createHttpClient();
+             CloseableHttpResponse response = httpClient.execute(canvasRequest)) {
+            if (response.getStatusLine() == null
+                    || response.getStatusLine().getStatusCode() == 401
+                    || response.getStatusLine().getStatusCode() == 400) {
+                LOG.warn("Refresh failed. Redirect to oauth flow");
+                throw new OauthTokenRequiredException();
+            } else if (response.getStatusLine().getStatusCode() != 200) {
+                String tokenUri = canvasRequest.getURI().toString();
+                throw new IOException(tokenUri + " returned a status of " + response.getStatusLine().getStatusCode());
+            } else {
+                return canvasResponseParser.parseToken(response);
+            }
         }
     }
 
@@ -73,4 +76,9 @@ public class OauthTokenRefreshService {
             throw new RuntimeException("Invalid encoding for canvas when requesting refresh oauthToken", e);
         }
     }
+
+    protected CloseableHttpClient createHttpClient() {
+        return HttpClientBuilder.create().build();
+    }
+
 }

@@ -1,7 +1,6 @@
 package edu.ksu.lti.launch.spring.config;
 
 import edu.ksu.lti.launch.util.CanvasResponseParser;
-import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +13,4 @@ public class LtiLaunchBeans {
         return new CanvasResponseParser();
     }
 
-
-    @Bean
-    @Scope("prototype")
-    public HttpClient httpClient() {
-        return HttpClientBuilder.create().build();
-    }
 }
