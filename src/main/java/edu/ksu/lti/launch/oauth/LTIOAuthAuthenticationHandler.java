@@ -66,7 +66,7 @@ public class LTIOAuthAuthenticationHandler implements OAuthAuthenticationHandler
                 authentication.getConsumerCredentials().getToken()
         );
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-        LOG.info("createAuthentication generated LTI auth principal (" + principal + "): req=" + request);
+        LOG.info("Authenticating user " + username);
         return auth;
     }
 

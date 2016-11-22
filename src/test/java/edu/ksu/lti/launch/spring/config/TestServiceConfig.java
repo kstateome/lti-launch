@@ -1,5 +1,6 @@
 package edu.ksu.lti.launch.spring.config;
 
+import edu.ksu.canvas.CanvasApiFactory;
 import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
@@ -67,5 +68,9 @@ public class TestServiceConfig {
         return new LtiLaunch();
     }
 
+    @Bean
+    public CanvasApiFactory canvasApiFactory() {
+        return new CanvasApiFactory("");
+    }
 
 }

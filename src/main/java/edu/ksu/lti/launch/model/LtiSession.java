@@ -1,7 +1,7 @@
 package edu.ksu.lti.launch.model;
 
+import edu.ksu.canvas.oauth.OauthToken;
 import edu.ksu.lti.launch.controller.LtiLaunchController;
-import edu.ksu.lti.launch.oauth.OauthToken;
 
 /**
  * Class to hold LTI session data. It is created and populated when the LTI application is first
@@ -49,9 +49,10 @@ public class LtiSession {
         return eid;
     }
 
-    // Convenience method
+    // Canvas API library now takes an object, not a string. Never use the string
+    @Deprecated
     public String getApiToken() {
-    	return oauthToken.getApiToken();
+    	return oauthToken.getAccessToken();
     }
     
     public void setOauthToken(OauthToken oauthToken) {

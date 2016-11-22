@@ -2,11 +2,12 @@ package edu.ksu.lti.launch.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import edu.ksu.canvas.oauth.OauthTokenRefresher;
+import edu.ksu.canvas.oauth.RefreshableOauthToken;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiSession;
-import edu.ksu.lti.launch.oauth.OauthToken;
 import edu.ksu.lti.launch.service.ConfigService;
-import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,11 @@ public class OauthController {
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;
-    private final OauthTokenRefreshService refreshService;
 
     @Autowired
-    private OauthController(ConfigService configService, OauthTokenService oauthTokenService, OauthTokenRefreshService refreshService) {
+    private OauthController(ConfigService configService, OauthTokenService oauthTokenService) {
         this.configService = configService;
         this.oauthTokenService = oauthTokenService;
-        this.refreshService = refreshService;
     }
 
     @RequestMapping("/beginOauth")
@@ -147,7 +146,8 @@ public class OauthController {
                 } else {
                     oauthTokenService.updateToken(eID, refreshToken);
                 }
-                ltiSession.setOauthToken(new OauthToken(oauthTokenService.getRefreshToken(eID), refreshService));
+                OauthTokenRefresher tokenRefresher = new OauthTokenRefresher(oauthClientId, oauthClientSecret, canvasUrl);
+                ltiSession.setOauthToken(new RefreshableOauthToken(tokenRefresher, refreshToken));
 
             }
             catch(IOException e) {

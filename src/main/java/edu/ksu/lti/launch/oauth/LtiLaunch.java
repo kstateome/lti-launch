@@ -1,12 +1,16 @@
 package edu.ksu.lti.launch.oauth;
 
+import edu.ksu.canvas.CanvasApiFactory;
+import edu.ksu.canvas.interfaces.CourseReader;
+import edu.ksu.canvas.oauth.OauthTokenRefresher;
+import edu.ksu.canvas.oauth.RefreshableOauthToken;
+import edu.ksu.canvas.requestOptions.ListCurrentUserCoursesOptions;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.model.LtiSession;
+import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiSessionService;
-import edu.ksu.lti.launch.service.OauthTokenRefreshService;
 import edu.ksu.lti.launch.service.OauthTokenService;
-import edu.ksu.lti.launch.validator.OauthTokenValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,24 +28,28 @@ public class LtiLaunch {
     @Autowired
     private OauthTokenService oauthTokenService;
     @Autowired
-    private OauthTokenRefreshService oauthTokenRefreshService;
-    @Autowired
-    private OauthTokenValidator oauthTokenValidator;
-    @Autowired
     private LtiSessionService ltiSessionService;
+    @Autowired
+    private ConfigService configService;
+    @Autowired
+    private CanvasApiFactory apiFactory;
 
 
 
-    public String ensureApiTokenPresent() throws OauthTokenRequiredException, NoLtiSessionException {
+    public edu.ksu.canvas.oauth.OauthToken ensureApiTokenPresent() throws OauthTokenRequiredException, NoLtiSessionException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         if (ltiSession.getOauthToken() != null) {
-            return ltiSession.getApiToken();
+            return ltiSession.getOauthToken();
         }
         if (ltiSession.getEid() != null) {
             String refreshToken = oauthTokenService.getRefreshToken(ltiSession.getEid());
             if (refreshToken != null) {
-                ltiSession.setOauthToken(new OauthToken(refreshToken, oauthTokenRefreshService));
-                return ltiSession.getApiToken();
+                String clientId = configService.getConfigValue("oauth_client_id");
+                String clientSecret = configService.getConfigValue("oauth_client_secret");
+                String canvasUrl = configService.getConfigValue("canvas_url");
+                OauthTokenRefresher tokenRefresher = new OauthTokenRefresher(clientId, clientSecret, canvasUrl);
+                ltiSession.setOauthToken(new RefreshableOauthToken(tokenRefresher, refreshToken));
+                return ltiSession.getOauthToken();
             }
             throw new OauthTokenRequiredException();
         }
@@ -62,9 +70,12 @@ public class LtiLaunch {
      */
     public void validateOAuthToken() throws NoLtiSessionException, IOException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-        if (!oauthTokenValidator.isValid(ltiSession)) {
-            throw new OauthTokenRequiredException();
-        }
+        CourseReader courseReader = apiFactory.getReader(CourseReader.class, ltiSession.getOauthToken());
+        //TODO: This should maybe call a different API endpoint. It was calling the user's todo list but
+        //the API library doesn't have this call implemented yet. User's courses probably works but may
+        //be a heaver API call.
+        //If call succeeds without an exception being thrown, the token is valid 
+        courseReader.listCurrentUserCourses(new ListCurrentUserCoursesOptions());
     }
 
 
