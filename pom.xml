@@ -184,7 +184,7 @@
         <dependency>
             <groupId>edu.ksu.canvas</groupId>
             <artifactId>canvas-api</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
