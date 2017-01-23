@@ -6,6 +6,7 @@ package edu.ksu.lti.launch.exception;
  * @author ssnelson
  */
 public class RefreshFailedException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     public RefreshFailedException(String message, Throwable cause){
         super(message, cause);
