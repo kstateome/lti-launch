@@ -14,7 +14,7 @@
     Re-launching this LTI tool from Canvas should fix it. This can be done by clicking the <em>refresh</em> button in your browser.
   </p>
   <p>If this problem persists after a refresh, please ensure that your browser
-    is not blocking any cookies from <i>lti.canvas.k-state.edu</i>.
+    is not blocking any cookies from <em>lti.canvas.k-state.edu</em>.
     If your browser is set to block third party cookies, you will have to make an exception for this tool to work.
   </p>
   <c:if test="${not empty errorMessage}">
