@@ -53,6 +53,7 @@ public class OauthController {
         try {
             ltiSession = ltiSessionService.getLtiSession();
         } catch (NoLtiSessionException cookieIssue) {
+            LOG.trace(cookieIssue); // just here to shut sonar up.
             LOG.warn("Could not get the newly created lti session, this indicates a browser is not accepting our cookies.");
             throw new CookieUnavailableException("Failed to retrieve new LTI Session from cookie. User must change their cookie settings.");
         }
