@@ -2,23 +2,21 @@ package edu.ksu.lti.launch.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import edu.ksu.canvas.oauth.OauthTokenRefresher;
 import edu.ksu.canvas.oauth.RefreshableOauthToken;
+import edu.ksu.lti.launch.exception.CookieUnavailableException;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
+import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,16 +38,24 @@ public class OauthController {
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;
+    private final LtiSessionService ltiSessionService;
 
     @Autowired
-    private OauthController(ConfigService configService, OauthTokenService oauthTokenService) {
+    private OauthController(ConfigService configService, OauthTokenService oauthTokenService, LtiSessionService ltiSessionService) {
         this.configService = configService;
         this.oauthTokenService = oauthTokenService;
+        this.ltiSessionService = ltiSessionService;
     }
 
     @RequestMapping("/beginOauth")
-    public String startOauth(HttpServletRequest request) throws NoLtiSessionException {
-        LtiSession ltiSession = getLtiSession();
+    public String startOauth(HttpServletRequest request) throws NoLtiSessionException, CookieUnavailableException {
+        LtiSession ltiSession;
+        try {
+            ltiSession = ltiSessionService.getLtiSession();
+        } catch (NoLtiSessionException cookieIssue) {
+            LOG.warn("Could not get the newly created lti session, this indicates a browser is not accepting our cookies.");
+            throw new CookieUnavailableException("Failed to retrieve new LTI Session from cookie. User must change their cookie settings.");
+        }
         LOG.debug("Sending user " + ltiSession.getEid() + " to get oauth token at " + ltiSession.getCanvasDomain());
         String oauthClientId = configService.getConfigValue("oauth_client_id");
         
@@ -81,7 +87,7 @@ public class OauthController {
     		@ModelAttribute(value="state") String state, 
     		@ModelAttribute(value="error") String errorMsg) throws NoLtiSessionException {
     	
-        LtiSession ltiSession = getLtiSession();
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
         LOG.info("got oauth token for " + ltiSession.getEid());
         LOG.debug("got oauth response: " + oauthCode);
         LOG.debug("got oauth state: "+state);
@@ -99,10 +105,7 @@ public class OauthController {
         if(oauthCode != null && !oauthCode.trim().isEmpty()) {
             try {
                 LOG.debug("got oauth code back: " + oauthCode);
-                StringBuilder sb = new StringBuilder();
-                sb.append(canvasUrl);
-                sb.append("/login/oauth2/token");
-                URL tokenUrl = new URL(sb.toString());
+                URL tokenUrl = new URL(canvasUrl + "/login/oauth2/token");
                 HttpURLConnection con = (HttpURLConnection)tokenUrl.openConnection();
                 con.setRequestMethod("POST");
                 con.setDoOutput(true);
@@ -155,19 +158,6 @@ public class OauthController {
             }
         }
         return "redirect:" + ltiSession.getInitialViewPath();
-    }
-
-    /** Copied from LtiLaunchController. Could possibly be abstracted to some kind of LtiSessionAware class
-     */
-    private LtiSession getLtiSession() throws NoLtiSessionException {
-        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest req = sra.getRequest();
-        HttpSession session = req.getSession();
-        LtiSession ltiSession = (LtiSession)session.getAttribute(LtiSession.class.getName());
-        if(ltiSession == null) {
-            throw new NoLtiSessionException();
-        }
-        return ltiSession;
     }
 
     /** Returns the base URL of this application. This includes scheme, hostname
