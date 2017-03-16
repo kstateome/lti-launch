@@ -7,6 +7,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Checks which Canvas instance this application is running in.
+ * When the periodic overwrite of beta/test happens in hosted Canvas instances,
+ * you can end up with Canvas test pointing at production LTI applications. This
+ * can potentially result in test data being pushed into production SIS or other
+ * systems that this LTI application may interact with.
+ * <p>
+ * This checker is invoked during launch and will throw an exception if the
+ * Canvas URL coming in from the LTI launch request doesn't match the configured
+ * Canvas URL or secondary URL if you have a vanity domain.
+ *
+ */
 @Component
 public class CanvasInstanceChecker {
     private final ConfigService configService;
