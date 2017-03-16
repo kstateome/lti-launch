@@ -2,6 +2,8 @@ package edu.ksu.lti.launch.exception;
 
 
 public class CookieUnavailableException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     public CookieUnavailableException() {
         // Nothing to do here.
     }
