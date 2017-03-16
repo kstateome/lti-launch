@@ -3,7 +3,6 @@ package edu.ksu.lti.launch.spring.config;
 import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
 import edu.ksu.lti.launch.oauth.LtiOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.oauth.LTIOAuthProviderProcessingFilter;
-import edu.ksu.lti.launch.oauth.MyOAuthNonceServices;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.oauth.provider.OAuthProcessingFilterEntryPoint;
+import org.springframework.security.oauth.provider.nonce.InMemoryNonceServices;
 import org.springframework.security.oauth.provider.token.InMemoryProviderTokenServices;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -51,8 +51,6 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         @Autowired
         private LtiConsumerDetailsService oauthConsumerDetailsService;
         @Autowired
-        private MyOAuthNonceServices oauthNonceServices;
-        @Autowired
         private LtiOAuthAuthenticationHandler oauthAuthenticationHandler;
         @Autowired
         private OAuthProcessingFilterEntryPoint oauthProcessingFilterEntryPoint;
@@ -64,7 +62,15 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
 
         @PostConstruct
         public void init() {
-            ltioAuthProviderProcessingFilter = new LTIOAuthProviderProcessingFilter(oauthConsumerDetailsService, oauthNonceServices, oauthProcessingFilterEntryPoint, oauthAuthenticationHandler, oauthProviderTokenServices);
+            //Set up nonce service to prevent replay attacks.
+            InMemoryNonceServices nonceService = new InMemoryNonceServices();
+            nonceService.setValidityWindowSeconds(600);
+
+            ltioAuthProviderProcessingFilter = new LTIOAuthProviderProcessingFilter(oauthConsumerDetailsService,
+                                                        nonceService,
+                                                        oauthProcessingFilterEntryPoint,
+                                                        oauthAuthenticationHandler,
+                                                        oauthProviderTokenServices);
         }
 
         @Override
