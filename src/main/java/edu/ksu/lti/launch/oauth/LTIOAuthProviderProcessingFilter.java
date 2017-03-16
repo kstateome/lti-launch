@@ -14,7 +14,6 @@
  */
 package edu.ksu.lti.launch.oauth;
 
-import org.springframework.security.oauth.provider.OAuthProcessingFilterEntryPoint;
 import org.springframework.security.oauth.provider.filter.ProtectedResourceProcessingFilter;
 import org.springframework.security.oauth.provider.nonce.OAuthNonceServices;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
@@ -32,9 +31,8 @@ import java.io.IOException;
 public class LTIOAuthProviderProcessingFilter extends ProtectedResourceProcessingFilter {
 
 
-    public LTIOAuthProviderProcessingFilter(LtiConsumerDetailsService oAuthConsumerDetailsService, OAuthNonceServices oAuthNonceServices, OAuthProcessingFilterEntryPoint oAuthProcessingFilterEntryPoint, LtiOAuthAuthenticationHandler oAuthAuthenticationHandler, OAuthProviderTokenServices oAuthProviderTokenServices) {
+    public LTIOAuthProviderProcessingFilter(LtiConsumerDetailsService oAuthConsumerDetailsService, OAuthNonceServices oAuthNonceServices, LtiOAuthAuthenticationHandler oAuthAuthenticationHandler, OAuthProviderTokenServices oAuthProviderTokenServices) {
         super();
-        setAuthenticationEntryPoint(oAuthProcessingFilterEntryPoint);
         setAuthHandler(oAuthAuthenticationHandler);
         setConsumerDetailsService(oAuthConsumerDetailsService);
         setNonceServices(oAuthNonceServices);

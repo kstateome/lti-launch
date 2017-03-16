@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.oauth.provider.OAuthProcessingFilterEntryPoint;
 import org.springframework.security.oauth.provider.nonce.InMemoryNonceServices;
 import org.springframework.security.oauth.provider.token.InMemoryProviderTokenServices;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
@@ -53,8 +52,6 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         @Autowired
         private LtiOAuthAuthenticationHandler oauthAuthenticationHandler;
         @Autowired
-        private OAuthProcessingFilterEntryPoint oauthProcessingFilterEntryPoint;
-        @Autowired
         private OAuthProviderTokenServices oauthProviderTokenServices;
 
         @Autowired
@@ -68,7 +65,6 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
 
             ltioAuthProviderProcessingFilter = new LTIOAuthProviderProcessingFilter(oauthConsumerDetailsService,
                                                         nonceService,
-                                                        oauthProcessingFilterEntryPoint,
                                                         oauthAuthenticationHandler,
                                                         oauthProviderTokenServices);
         }
