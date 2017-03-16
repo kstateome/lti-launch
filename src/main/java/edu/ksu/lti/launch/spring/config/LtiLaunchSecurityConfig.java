@@ -1,7 +1,7 @@
 package edu.ksu.lti.launch.spring.config;
 
 import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
-import edu.ksu.lti.launch.oauth.LTIOAuthAuthenticationHandler;
+import edu.ksu.lti.launch.oauth.LtiOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.oauth.LTIOAuthProviderProcessingFilter;
 import edu.ksu.lti.launch.oauth.MyOAuthNonceServices;
 import edu.ksu.lti.launch.service.ConfigService;
@@ -53,7 +53,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
         @Autowired
         private MyOAuthNonceServices oauthNonceServices;
         @Autowired
-        private LTIOAuthAuthenticationHandler oauthAuthenticationHandler;
+        private LtiOAuthAuthenticationHandler oauthAuthenticationHandler;
         @Autowired
         private OAuthProcessingFilterEntryPoint oauthProcessingFilterEntryPoint;
         @Autowired
