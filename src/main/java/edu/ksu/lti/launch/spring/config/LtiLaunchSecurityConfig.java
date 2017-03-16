@@ -1,6 +1,6 @@
 package edu.ksu.lti.launch.spring.config;
 
-import edu.ksu.lti.launch.oauth.LTIConsumerDetailsService;
+import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
 import edu.ksu.lti.launch.oauth.LTIOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.oauth.LTIOAuthProviderProcessingFilter;
 import edu.ksu.lti.launch.oauth.MyOAuthNonceServices;
@@ -49,7 +49,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
     public static class LTISecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
         private LTIOAuthProviderProcessingFilter ltioAuthProviderProcessingFilter;
         @Autowired
-        private LTIConsumerDetailsService oauthConsumerDetailsService;
+        private LtiConsumerDetailsService oauthConsumerDetailsService;
         @Autowired
         private MyOAuthNonceServices oauthNonceServices;
         @Autowired
@@ -88,7 +88,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter implements 
             http.requestMatchers()
                 .antMatchers("/launch").and()
                 .addFilterBefore(ltioAuthProviderProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().anyRequest().hasRole("LTI").and().csrf().disable()
+                .authorizeRequests().anyRequest().authenticated().and().csrf().disable()
                 .headers().addHeaderWriter(new XFrameOptionsHeaderWriter(new StaticAllowFromStrategy(new URI(canvasUrl))))
                 .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
                         "default-src 'self' https://s.ksucloud.net https://*.instructure.com; " +
