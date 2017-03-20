@@ -18,12 +18,13 @@ public class LtiOAuthAuthenticationHandler implements OAuthAuthenticationHandler
     private static final Logger LOG = Logger.getLogger(LtiOAuthAuthenticationHandler.class);
 
     @Override
-    public Authentication createAuthentication(HttpServletRequest request, 
-                                               ConsumerAuthentication authentication, 
+    public Authentication createAuthentication(HttpServletRequest request,
+                                               ConsumerAuthentication consumerAuthentication,
                                                OAuthAccessProviderToken authToken) {
-        LOG.info("Creating LTI authentication for Canvas user " + request.getParameter("custom_canvas_user_login_id"));
-        
-        Authentication auth = new UsernamePasswordAuthenticationToken(authentication.getConsumerCredentials(), null, Collections.emptySet());
+        LOG.debug("Creating LTI authentication for Canvas user " + request.getParameter("custom_canvas_user_login_id"));
+
+        //If we don't pass in the empty set, the resulting object is not considered authenticated (See documentation on this constructor)
+        Authentication auth = new UsernamePasswordAuthenticationToken(consumerAuthentication.getConsumerCredentials(), null, Collections.emptySet());
         return auth;
     }
 }

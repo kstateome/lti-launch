@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
  * This checker is invoked during launch and will throw an exception if the
  * Canvas URL coming in from the LTI launch request doesn't match the configured
  * Canvas URL or secondary URL if you have a vanity domain.
- *
  */
 @Component
 public class CanvasInstanceChecker {
