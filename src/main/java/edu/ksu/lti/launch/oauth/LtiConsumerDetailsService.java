@@ -31,7 +31,7 @@ public class LtiConsumerDetailsService implements ConsumerDetailsService {
     }
 
     @Override
-    public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
+    public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) {
         if(StringUtils.isBlank(consumerKey)) {
             throw new OAuthException("Supplied LTI key can not be blank");
         }

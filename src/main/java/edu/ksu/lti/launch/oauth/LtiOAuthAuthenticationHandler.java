@@ -24,7 +24,6 @@ public class LtiOAuthAuthenticationHandler implements OAuthAuthenticationHandler
         LOG.debug("Creating LTI authentication for Canvas user " + request.getParameter("custom_canvas_user_login_id"));
 
         //If we don't pass in the empty set, the resulting object is not considered authenticated (See documentation on this constructor)
-        Authentication auth = new UsernamePasswordAuthenticationToken(consumerAuthentication.getConsumerCredentials(), null, Collections.emptySet());
-        return auth;
+        return new UsernamePasswordAuthenticationToken(consumerAuthentication.getConsumerCredentials(), null, Collections.emptySet());
     }
 }
