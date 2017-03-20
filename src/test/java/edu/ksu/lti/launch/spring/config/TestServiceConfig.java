@@ -50,16 +50,6 @@ public class TestServiceConfig {
             public String findSecretForKey(String key) {
                 return null;
             }
-
-            @Override
-            public String findOauthClientId() {
-                return null;
-            }
-
-            @Override
-            public String findOauthClientSecret() {
-                return null;
-            }
         };
     }
 
