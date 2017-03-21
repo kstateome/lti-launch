@@ -59,7 +59,10 @@ public class LtiSession {
     	this.oauthToken = oauthToken;
     }
 
-    // Preferably, use the convenience method above.
+    /**
+     * Get the current user's Canvas API OAuth token for authentication
+     * @return User's OAuth token
+     */
     public OauthToken getOauthToken() {
         return this.oauthToken;
     }
