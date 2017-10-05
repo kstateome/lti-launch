@@ -31,4 +31,7 @@ To utilize the LTI launch capabilities of this application after this point, you
 
 The launch process sets up an `LtiSession` object in the HTTP session. The service class `LitSessionService` can be autowired into your controller classes and used to get the LTI session. The LTI session holds all of the LTI launch data plus an `OauthToken` object that can be used for authentication when making calls to the Canvas API.
 
+### Getting an OAuth token
+In order to make calls to the Canvas API, your application must request an OAuth token from the user. Applications that need to talk to the Canvas API should call the `LtiLaunch.ensureApiTokenPresent()` method. This will attempt to retrieve an OAuth token for the user. If this fails, it will throw an `OauthTokenRequiredException`. Your application needs to catch this exception as well as the `InvalidOauthTokenException` and if these are encountered, redirect the user's browser to the relative URL `/beginOauth`. This will cause the `OauthController` to take over and have the user go through the OAuth 2 flow to request access to their account.
+
 See also our [Canvas API Library](https://github.com/kstateome/canvas-api) project for more details on how to interact with the Canvas API from within your applications.
