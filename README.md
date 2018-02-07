@@ -4,6 +4,7 @@ LTI Launch is a project designed to assist in the development of Java based LTI 
 
 ### Technologies Used
 - Java 8
+- Maven (Compatible with 3.5.2, requires 3.1+)
 - Spring MVC 4.1.6
 - Spring Security OAuth
 - Google GSON
