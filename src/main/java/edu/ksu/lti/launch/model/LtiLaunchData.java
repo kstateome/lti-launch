@@ -47,7 +47,9 @@ public class LtiLaunchData {
     private String lisPersonContactEmailPrimary;
     private String lisPersonNameGiven;
     private String launchPresentationLocale;
-
+    private String lisResultSourcedid;
+    private String lisOutcomeServiceUrl;
+    
     // computed from a CSV list in the "roles" string
     private List<InstitutionRole> rolesList;
 
@@ -322,7 +324,23 @@ public class LtiLaunchData {
     public void setResource_link_title(String resourceLinkTitle) {
         this.resourceLinkTitle = resourceLinkTitle;
     }
+    
+    public String getLis_result_sourcedid() {
+        return lisResultSourcedid;
+    }
 
+    public void setLis_result_sourcedid(String lisResultSourcedid) {
+        this.lisResultSourcedid = lisResultSourcedid;
+    }
+
+    public String getLis_outcome_service_url() {
+        return lisOutcomeServiceUrl;
+    }
+
+    public void setLis_outcome_service_url(String lisOutcomeServiceUrl) {
+        this.lisOutcomeServiceUrl = lisOutcomeServiceUrl;
+    }
+    
     public String getContext_id() {
         return contextId;
     }
