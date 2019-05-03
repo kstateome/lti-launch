@@ -30,11 +30,6 @@
       <email>toby@ksu.edu</email>
       <organization>Kansas State University, Office of Mediated Education</organization>
     </developer>
-    <developer>
-      <name>Killian Stone</name>
-      <email>killsto@ksu.edu</email>
-      <organization>Kansas State University, Office of Mediated Education</organization>
-    </developer>
   </developers>
 
   <scm>
@@ -66,6 +61,26 @@
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.1,)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -206,7 +221,7 @@
       <dependency>
         <groupId>org.springframework.security.oauth</groupId>
         <artifactId>spring-security-oauth</artifactId>
-        <version>2.0.2.RELEASE</version>
+        <version>2.0.17.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
