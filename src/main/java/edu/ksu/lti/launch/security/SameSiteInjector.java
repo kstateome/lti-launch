@@ -8,7 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("sameSiteInjector")
 public class SameSiteInjector {
     private static final Logger LOG = Logger.getLogger(SameSiteInjector.class);
 
@@ -18,7 +18,7 @@ public class SameSiteInjector {
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
         DefaultCookieSerializer cookieSerializer = applicationContext.getBean(DefaultCookieSerializer.class);
-        LOG.info("Received DefaultCookieSerializer, Overriding SameSite Strict");
+        LOG.info("Received DefaultCookieSerializer, Overriding SameSite to \"None; Secure\"");
         cookieSerializer.setSameSite("None; Secure");
     }
 }

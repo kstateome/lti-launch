@@ -2,11 +2,14 @@ package edu.ksu.lti.launch.spring.config;
 
 import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
 import edu.ksu.lti.launch.oauth.LtiOAuthAuthenticationHandler;
+import edu.ksu.lti.launch.security.SameSiteInjector;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -99,5 +102,10 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter {
     public OAuthProviderTokenServices oauthProviderTokenServices() {
         // NOTE: we don't use the OAuthProviderTokenServices for 0-legged but it cannot be null
         return new InMemoryProviderTokenServices();
+    }
+
+    @Bean(name = "sameSiteInjector")
+    public SameSiteInjector sameSiteInjector() {
+        return new SameSiteInjector();
     }
 }
