@@ -56,11 +56,13 @@ public class LtiLaunchData {
     public enum InstitutionRole {
         Sysadmin, SysSupport, Creator, AccountAdmin, User, ContentDeveloper, Manager,
         Student, Faculty, Member, Learner, Instructor, TeachingAssistant, Mentor, Staff, Alumni,
-        ProspectiveStudent,Guest, Other, Administrator, Observer, None;
+        ProspectiveStudent, Guest, Other, Administrator, Observer, None, Designer;
 
-        private static Map<String, InstitutionRole> roleMap = new HashMap<>();
+        private static final Map<String, InstitutionRole> roleMap = new HashMap<>();
 
         static {
+            //ToDo: See which of these are discontinued and can be deleted, and there are likely others that are missing.
+
             //system roles
             roleMap.put("urn:lti:sysrole:ims/lis/SysAdmin", Sysadmin);
             roleMap.put("SysAdmin", Sysadmin);
@@ -119,6 +121,8 @@ public class LtiLaunchData {
             roleMap.put("urn:lti:role:ims/lis/Administrator", Administrator);
             roleMap.put("urn:lti:role:ims/lis/TeachingAssistant", TeachingAssistant);
             roleMap.put("TeachingAssistant", TeachingAssistant);
+            roleMap.put("urn:lti:role:ims/lis/Designer", Designer);
+            roleMap.put("Designer", Designer);
         }
 
         public static InstitutionRole fromString(String roleStr) {
