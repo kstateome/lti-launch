@@ -50,6 +50,8 @@ public class LtiLaunchData {
 
     // computed from a CSV list in the "roles" string
     private List<InstitutionRole> rolesList;
+    private Integer customCanvasAssignmentId;
+    private String customCanvasCourseName;
 
     // List of possible roles is from section A.2.2 at http://www.imsglobal.org/lti/blti/bltiv1p0/ltiBLTIimgv1p0.html
     // Going to be honest here. Pretty sure there needs to be some more intelligence added here. Especially with context sub-roles
@@ -386,5 +388,21 @@ public class LtiLaunchData {
 
     public void setLaunch_presentation_locale(String launchPresentationLocale) {
         this.launchPresentationLocale = launchPresentationLocale;
+    }
+
+    public Integer getCustom_canvas_assignment_id() {
+        return customCanvasAssignmentId;
+    }
+
+    public void setCustom_canvas_assignment_id(Integer customCanvasAssignmentId) {
+        this.customCanvasAssignmentId = customCanvasAssignmentId;
+    }
+
+    public String getCustom_canvas_course_name(){
+        return this.customCanvasCourseName;
+    }
+
+    public void setCustom_canvas_course_name(String name){
+        this.customCanvasCourseName = name;
     }
 }
