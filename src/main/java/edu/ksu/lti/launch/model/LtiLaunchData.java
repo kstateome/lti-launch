@@ -50,7 +50,7 @@ public class LtiLaunchData {
 
     // computed from a CSV list in the "roles" string
     private List<InstitutionRole> rolesList;
-    private Integer customCanvasAssignmentId;
+    private Long customCanvasAssignmentId;
     private String customCanvasCourseName;
 
     // List of possible roles is from section A.2.2 at http://www.imsglobal.org/lti/blti/bltiv1p0/ltiBLTIimgv1p0.html
@@ -390,11 +390,11 @@ public class LtiLaunchData {
         this.launchPresentationLocale = launchPresentationLocale;
     }
 
-    public Integer getCustom_canvas_assignment_id() {
+    public Long getCustom_canvas_assignment_id() {
         return customCanvasAssignmentId;
     }
 
-    public void setCustom_canvas_assignment_id(Integer customCanvasAssignmentId) {
+    public void setCustom_canvas_assignment_id(Long customCanvasAssignmentId) {
         this.customCanvasAssignmentId = customCanvasAssignmentId;
     }
 
