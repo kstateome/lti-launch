@@ -43,11 +43,12 @@ public abstract class LtiLaunchController {
         ltiSession.setLtiLaunchData(ltiData);
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpSession newSession = sra.getRequest().getSession();
+        String jsessionid = newSession.getId();
         newSession.setAttribute(LtiSession.class.getName(), ltiSession);
         instanceChecker.assertValidInstance(ltiSession);
         LOG.info("launching LTI integration '" + getApplicationName() + "' from " + ltiSession.getCanvasDomain() + " for course: " + canvasCourseId + " as user " + eID);
         LOG.debug("forwarding user to: " + getInitialViewPath());
-        return "forward:" + getInitialViewPath();
+        return "redirect:" + getInitialViewPath() + ";jsessionid=" + jsessionid;
     }
 
     /** return the initial path that the user should be sent
