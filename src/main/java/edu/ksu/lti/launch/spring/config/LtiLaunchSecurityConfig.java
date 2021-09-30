@@ -23,7 +23,10 @@ import org.springframework.security.web.header.writers.frameoptions.StaticAllowF
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.servlet.ServletContext;
+import javax.servlet.SessionTrackingMode;
 import java.net.URI;
+import java.util.EnumSet;
 
 /**
  * This configuration class sets up Spring Security to authenticate LTI
@@ -49,6 +52,9 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter {
 
         @Autowired
         private ConfigService configService;
+
+        @Autowired
+        private ServletContext servletContext;
 
         @Override
         public void configure(WebSecurity web) throws Exception {
@@ -79,6 +85,7 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter {
                         "script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; " +
                         "style-src 'self' 'unsafe-inline' https://*.instructure.com https://www.k-state.edu" ))
                 .addHeaderWriter(new StaticHeadersWriter("P3P", "CP=\"This is just to make IE happy with cookies in this iframe\""));
+            servletContext.setSessionTrackingModes(EnumSet.of(SessionTrackingMode.URL));
         }
 
         private ProtectedResourceProcessingFilter configureProcessingFilter() {
