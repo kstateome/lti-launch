@@ -237,8 +237,8 @@
         <version>3.3.2</version>
       </dependency>
       <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
         <version>2.6.2</version>
       </dependency>
       <dependency>
