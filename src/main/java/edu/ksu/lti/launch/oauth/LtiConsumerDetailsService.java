@@ -1,7 +1,8 @@
 package edu.ksu.lti.launch.oauth;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecretImpl;
@@ -19,7 +20,7 @@ import edu.ksu.lti.launch.service.LtiLaunchKeyService;
  */
 @Component
 public class LtiConsumerDetailsService implements ConsumerDetailsService {
-    private static final Logger LOG = Logger.getLogger(LtiConsumerDetailsService.class);
+    private static final Logger LOG = LogManager.getLogger(LtiConsumerDetailsService.class);
 
     private LtiLaunchKeyService ltiKeyService;
     private String applicationName;
