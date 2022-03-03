@@ -52,11 +52,16 @@ public abstract class LtiLaunchController {
     }
 
     /** return the initial path that the user should be sent
-     *  to after authenticating the LTI launch request */
+     *  to after authenticating the LTI launch request
+     *
+     * @return Name of the initial view to send the user to
+     *  */
     protected abstract String getInitialViewPath();
 
     /** The identifier of this LTI application. Used to look up config
      * values in the database and such
+     *
+     * @return The name of the application
      */
     protected abstract String getApplicationName();
 }
