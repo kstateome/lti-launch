@@ -10,7 +10,8 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,7 +35,7 @@ import java.util.UUID;
  */
 @Controller
 public class OauthController {
-    private static final Logger LOG = Logger.getLogger(OauthController.class);
+    private static final Logger LOG = LogManager.getLogger(OauthController.class);
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;

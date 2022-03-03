@@ -11,7 +11,8 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ import java.io.IOException;
 @Component
 @Scope("session")
 public class LtiLaunch {
-    private static final Logger LOG = Logger.getLogger(LtiLaunch.class);
+    private static final Logger LOG = LogManager.getLogger(LtiLaunch.class);
     @Autowired
     private OauthTokenService oauthTokenService;
     @Autowired

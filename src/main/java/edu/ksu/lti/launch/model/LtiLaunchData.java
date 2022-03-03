@@ -1,7 +1,8 @@
 package edu.ksu.lti.launch.model;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class LtiLaunchData {
 
-    private static final Logger LOG = Logger.getLogger(LtiLaunchData.class);
+    private static final Logger LOG = LogManager.getLogger(LtiLaunchData.class);
 
     private String ltiVersion;
     private String contextLabel;
