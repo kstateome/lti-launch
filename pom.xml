@@ -4,7 +4,7 @@
 
   <groupId>edu.ksu.ome.lti</groupId>
   <artifactId>lti-launch</artifactId>
-  <version>1.4.6-SNAPSHOT</version>
+  <version>1.4.6</version>
   <packaging>jar</packaging>
 
   <name>LTI Launch</name>
@@ -36,7 +36,7 @@
     <connection>scm:git:ssh://git@github.com/kstateome/lti-launch.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/kstateome/lti-launch.git</developerConnection>
     <url>https://github.com/kstateome/lti-launch</url>
-    <tag>HEAD</tag>
+    <tag>1.4.6</tag>
   </scm>
 
   <distributionManagement>
