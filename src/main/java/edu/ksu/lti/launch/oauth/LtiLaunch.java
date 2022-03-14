@@ -1,10 +1,10 @@
 package edu.ksu.lti.launch.oauth;
 
 import edu.ksu.canvas.CanvasApiFactory;
-import edu.ksu.canvas.interfaces.CourseReader;
+import edu.ksu.canvas.interfaces.UserReader;
+import edu.ksu.canvas.model.User;
 import edu.ksu.canvas.oauth.OauthTokenRefresher;
 import edu.ksu.canvas.oauth.RefreshableOauthToken;
-import edu.ksu.canvas.requestOptions.ListCurrentUserCoursesOptions;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.exception.OauthTokenRequiredException;
 import edu.ksu.lti.launch.model.LtiSession;
@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /*
  * This class was extracted from a subset of functions from LtiLaunchController
@@ -71,12 +72,12 @@ public class LtiLaunch {
      */
     public void validateOAuthToken() throws NoLtiSessionException, IOException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-        CourseReader courseReader = apiFactory.getReader(CourseReader.class, ltiSession.getOauthToken());
-        //TODO: This should maybe call a different API endpoint. It was calling the user's todo list but
-        //the API library doesn't have this call implemented yet. User's courses probably works but may
-        //be a heaver API call.
-        //If call succeeds without an exception being thrown, the token is valid 
-        courseReader.listCurrentUserCourses(new ListCurrentUserCoursesOptions());
+        UserReader userReader = apiFactory.getReader(UserReader.class, ltiSession.getOauthToken());
+        //If call to API endpoint succeeds without an exception, then the OAuth token is valid
+        Optional<User> user = userReader.showUserDetails("self");
+        if(user.isPresent()) {
+            LOG.debug("Validated OAuth token for canvas user: ", user.get().getId());
+        }
     }
 
 
