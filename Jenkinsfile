@@ -1,8 +1,7 @@
 @Library('jenkins-shared-libs') _
-def config = [ appName: 'lti-scantron',
+def config = [ appName: 'lti-launch',
                podName: 'java-11-maven-3.5.2.yaml',
                containerName: 'jdk-11-maven',
-               testEnv: 'lti',
                runUnitTests: false,
                runIntegrationTests: true
              ]
