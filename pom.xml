@@ -54,6 +54,8 @@
   <properties>
     <log4j2.version>2.17.1</log4j2.version>
     <maven.surefire.version>2.22.2</maven.surefire.version>
+
+      <spring-security.version>5.8.14</spring-security.version>
     <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
     <skipITs>true</skipITs>
   </properties>
@@ -274,6 +276,21 @@
         <artifactId>spring-security-oauth</artifactId>
         <version>2.0.17.RELEASE</version>
       </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
