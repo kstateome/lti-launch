@@ -12,7 +12,7 @@
   <description>Java framework for authenticating LTI launch requests from the Canvas LMS</description>
   <url>https://github.com/kstateome/lti-launch</url>
 
-   <licenses>
+  <licenses>
     <license>
       <name>GNU Lesser General Public License (LGPL), Version 3</name>
       <url>http://www.fsf.org/licensing/licenses/lgpl.txt</url>
@@ -54,8 +54,8 @@
   <properties>
     <log4j2.version>2.17.1</log4j2.version>
     <maven.surefire.version>2.22.2</maven.surefire.version>
-
-      <spring-security.version>5.8.14</spring-security.version>
+    <spring.version>5.3.14</spring.version>
+    <spring-security.version>5.8.14</spring-security.version>
     <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
     <skipITs>true</skipITs>
   </properties>
@@ -269,32 +269,32 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>4.1.6.RELEASE</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security.oauth</groupId>
         <artifactId>spring-security-oauth</artifactId>
         <version>2.0.17.RELEASE</version>
       </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>${spring-security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring-security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring-security.version}</version>
-        </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>4.1.6.RELEASE</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -329,7 +329,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>4.1.6.RELEASE</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.powermock</groupId>
