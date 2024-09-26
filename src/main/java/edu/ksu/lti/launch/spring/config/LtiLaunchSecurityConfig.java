@@ -4,8 +4,8 @@ import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
 import edu.ksu.lti.launch.oauth.LtiOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,11 +69,14 @@ public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter {
             if (StringUtils.isBlank(canvasUrl)) {
                 throw new RuntimeException("Missing canvas_url config value");
             }
-            http.requestMatchers()
-                .antMatchers("/launch").and()
+            http.securityMatchers()
+                .requestMatchers("/launch").and()
                 .addFilterBefore(configureProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().anyRequest().authenticated().and().csrf().disable()
-                .headers().addHeaderWriter(new XFrameOptionsHeaderWriter(new StaticAllowFromStrategy(new URI(canvasUrl))))
+                .authorizeHttpRequests().anyRequest().authenticated().and().csrf().disable()
+                .headers()
+                .frameOptions()
+                .disable()
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(new StaticAllowFromStrategy(new URI(canvasUrl))))
                 .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
                         "default-src 'self' https://s.ksucloud.net https://*.instructure.com; " +
                         "font-src 'self' https://s.ksucloud.net https://*.instructure.com; " +
