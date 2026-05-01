@@ -52,10 +52,10 @@
   </distributionManagement>
 
   <properties>
-    <log4j2.version>2.17.1</log4j2.version>
+    <log4j2.version>2.25.4</log4j2.version>
     <maven.surefire.version>3.5.5</maven.surefire.version>
-    <spring.version>5.3.14</spring.version>
-    <spring-security.version>5.8.14</spring-security.version>
+    <spring.version>6.2.18</spring.version>
+    <spring-security.version>6.5.10</spring-security.version>
     <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
     <skipITs>true</skipITs>
   </properties>
@@ -200,7 +200,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.19.1</version>
+            <version>${maven.surefire.version}</version>
             <configuration>
               <outputDirectory>target/jacoco</outputDirectory>
               <systemPropertyVariables>
@@ -282,11 +282,6 @@
         <version>${spring.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework.security.oauth</groupId>
-        <artifactId>spring-security-oauth</artifactId>
-        <version>2.0.17.RELEASE</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
         <version>${spring-security.version}</version>
@@ -309,7 +304,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.3.2</version>
+        <version>3.20.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -322,19 +317,19 @@
         <version>${log4j2.version}</version>
       </dependency>
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>3.0.1</version>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.4</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>4.13.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -370,12 +365,20 @@
       <artifactId>spring-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.security.oauth</groupId>
-      <artifactId>spring-security-oauth</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -386,12 +389,8 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
