@@ -53,7 +53,7 @@
 
   <properties>
     <log4j2.version>2.17.1</log4j2.version>
-    <maven.surefire.version>2.22.2</maven.surefire.version>
+    <maven.surefire.version>3.5.5</maven.surefire.version>
     <spring.version>5.3.14</spring.version>
     <spring-security.version>5.8.14</spring-security.version>
     <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
@@ -65,15 +65,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.15.0</version>
         <configuration>
-          <release>11</release>
+          <release>21</release>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.6.2</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -83,7 +83,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>[3.1,)</version>
+                  <version>[3.9,)</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
@@ -93,12 +93,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.9.1</version>
+        <version>3.21.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M1</version>
+        <version>3.3.1</version>
         <configuration>
           <tagNameFormat>@{project.version}</tagNameFormat>
         </configuration>
@@ -150,7 +150,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>3.2.8</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -164,7 +164,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.1</version>
+            <version>3.4.0</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -177,7 +177,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.3.2</version>
+            <version>3.12.0</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -193,7 +193,7 @@
     <profile>
       <id>sonar</id>
       <properties>
-        <jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
       </properties>
       <build>
         <plugins>
