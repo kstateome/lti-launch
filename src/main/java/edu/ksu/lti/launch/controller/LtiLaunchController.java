@@ -46,8 +46,8 @@ public abstract class LtiLaunchController {
         HttpSession newSession = sra.getRequest().getSession();
         newSession.setAttribute(LtiSession.class.getName(), ltiSession);
         instanceChecker.assertValidInstance(ltiSession);
-        LOG.info("launching LTI integration '" + getApplicationName() + "' from " + ltiSession.getCanvasDomain() + " for course: " + canvasCourseId + " as user " + eID);
-        LOG.debug("forwarding user to: " + getInitialViewPath());
+        LOG.info("launching LTI integration '{}' from {} for course: {} as user {}", getApplicationName(), ltiSession.getCanvasDomain(), canvasCourseId, eID);
+        LOG.debug("forwarding user to: {}", getInitialViewPath());
         return "forward:" + getInitialViewPath();
     }
 

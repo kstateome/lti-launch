@@ -76,7 +76,7 @@ public class LtiLaunch {
         //If call to API endpoint succeeds without an exception, then the OAuth token is valid
         Optional<User> user = userReader.showUserDetails("self");
         if(user.isPresent()) {
-            LOG.debug("Validated OAuth token for canvas user: ", user.get().getId());
+            LOG.debug("Validated OAuth token for canvas user: {}", user.get().getId());
         }
     }
 

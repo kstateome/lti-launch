@@ -46,7 +46,7 @@ public class LtiConsumerDetailsService implements ConsumerDetailsService {
         consumerDetails.setSignatureSecret(new SharedConsumerSecretImpl(ltiKeySecret));
         consumerDetails.setConsumerName(applicationName);
         consumerDetails.setRequiredToObtainAuthenticatedToken(false);
-        LOG.info("Constructed consumer details for LTI key " + consumerKey);
+        LOG.info("Constructed consumer details for LTI key {}", consumerKey);
         return consumerDetails;
     }
 }

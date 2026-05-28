@@ -58,7 +58,7 @@ public class OauthController {
             LOG.warn("Could not get the newly created lti session, this indicates a browser is not accepting our cookies.");
             throw new CookieUnavailableException("Failed to retrieve new LTI Session from cookie. User must change their cookie settings.");
         }
-        LOG.debug("Sending user " + ltiSession.getEid() + " to get oauth token at " + ltiSession.getCanvasDomain());
+        LOG.debug("Sending user {} to get oauth token at {}", ltiSession.getEid(), ltiSession.getCanvasDomain());
         String oauthClientId = configService.getConfigValue("oauth_client_id");
         
         String randomUuid = UUID.randomUUID().toString();
@@ -78,7 +78,7 @@ public class OauthController {
         sb.append("&redirect_uri=");
         sb.append(getApplicationBaseUrl(request, true));
         sb.append("/oauthResponse");
-        LOG.debug("returning from start oauth: " + sb.toString());
+        LOG.debug("returning from start oauth: {}", sb);
         return sb.toString();
     }
 
@@ -90,10 +90,10 @@ public class OauthController {
     		@ModelAttribute(value="error") String errorMsg) throws NoLtiSessionException {
     	
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-        LOG.info("got oauth token for " + ltiSession.getEid());
-        LOG.debug("got oauth response: " + oauthCode);
-        LOG.debug("got oauth state: "+state);
-        LOG.debug("oauth error: " + errorMsg);
+        LOG.info("got oauth token for {}", ltiSession.getEid());
+        LOG.debug("got oauth response: {}", oauthCode);
+        LOG.debug("got oauth state: {}", state);
+        LOG.debug("oauth error: {}", errorMsg);
         
         if(!ltiSession.getOauthTokenRequestState().equals(state)) {
         	String msg = "In the OAuth Token Response, the state does not match what we sent! " +
@@ -106,7 +106,7 @@ public class OauthController {
         String oauthClientSecret = configService.getConfigValue("oauth_client_secret");
         if(oauthCode != null && !oauthCode.trim().isEmpty()) {
             try {
-                LOG.debug("got oauth code back: " + oauthCode);
+                LOG.debug("got oauth code back: {}", oauthCode);
                 URL tokenUrl = new URL(canvasUrl + "/login/oauth2/token");
                 HttpURLConnection con = (HttpURLConnection)tokenUrl.openConnection();
                 con.setRequestMethod("POST");
@@ -122,14 +122,14 @@ public class OauthController {
                 paramsBuilder.append("&redirect_uri=");
                 paramsBuilder.append(getApplicationBaseUrl(request, true));
                 paramsBuilder.append("/oauthResponse");
-                LOG.debug("sending params to get oauth token: " + paramsBuilder.toString());
+                LOG.debug("sending params to get oauth token: {}", paramsBuilder);
                 out.write(paramsBuilder.toString().getBytes());
                 out.flush();
                 out.close();
 
                 int responseCode = con.getResponseCode();
-                LOG.debug("got response code from token request: " + responseCode);
-                LOG.debug("response message: " + con.getResponseMessage());
+                LOG.debug("got response code from token request: {}", responseCode);
+                LOG.debug("response message: {}", con.getResponseMessage());
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
@@ -137,13 +137,13 @@ public class OauthController {
                 while ((inputLine = in.readLine()) != null) {
                     content.append(inputLine);
                 }
-                LOG.debug("content: " + content.toString());
+                LOG.debug("content: {}", content);
                 JsonObject jobj = new Gson().fromJson(content.toString(), JsonObject.class);
                 String accessToken = jobj.get("access_token").getAsString();
                 String refreshToken = jobj.get("refresh_token").getAsString();
                 String eID = ltiSession.getEid();
-                LOG.debug("access token for eid " + eID + ": " + accessToken);
-                LOG.debug("refresh token for eid " + eID + ": " + refreshToken);
+                LOG.debug("access token for eid {}: {}", eID, accessToken);
+                LOG.debug("refresh token for eid {}: {}", eID, refreshToken);
                 
                 String token = oauthTokenService.getRefreshToken(eID);
                 if (token == null) {
@@ -181,7 +181,7 @@ public class OauthController {
             sb.append(request.getServerPort());
         }
         if(includeLtiApp) {
-            LOG.debug("context path: " + request.getContextPath());
+            LOG.debug("context path: {}", request.getContextPath());
             sb.append(request.getContextPath());
         }
         return sb.toString();

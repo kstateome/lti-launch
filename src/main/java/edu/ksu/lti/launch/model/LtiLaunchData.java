@@ -343,7 +343,7 @@ public class LtiLaunchData {
     }
 
     public void setRoles(String roles) {
-        LOG.debug("got LTI roles: " + roles);
+        LOG.debug("got LTI roles: {}", roles);
         this.roles = roles;
 
         List<InstitutionRole> list = new ArrayList<>();
