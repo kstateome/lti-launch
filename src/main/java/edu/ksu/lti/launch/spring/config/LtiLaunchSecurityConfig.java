@@ -4,8 +4,8 @@ import edu.ksu.lti.launch.oauth.LtiConsumerDetailsService;
 import edu.ksu.lti.launch.oauth.LtiOAuthAuthenticationHandler;
 import edu.ksu.lti.launch.service.ConfigService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ import java.net.URI;
 @EnableWebMvcSecurity
 public class LtiLaunchSecurityConfig extends WebMvcConfigurerAdapter {
 
-    private static final Logger LOG = LogManager.getLogger(LtiLaunchSecurityConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LtiLaunchSecurityConfig.class);
 
     @Configuration
     @Order(1)

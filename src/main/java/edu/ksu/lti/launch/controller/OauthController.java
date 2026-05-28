@@ -10,8 +10,8 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenService;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,7 +35,7 @@ import java.util.UUID;
  */
 @Controller
 public class OauthController {
-    private static final Logger LOG = LogManager.getLogger(OauthController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OauthController.class);
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;
@@ -54,7 +54,7 @@ public class OauthController {
         try {
             ltiSession = ltiSessionService.getLtiSession();
         } catch (NoLtiSessionException cookieIssue) {
-            LOG.trace(cookieIssue); // just here to shut sonar up.
+            LOG.trace("No LTI session available from cookie", cookieIssue); // just here to shut sonar up.
             LOG.warn("Could not get the newly created lti session, this indicates a browser is not accepting our cookies.");
             throw new CookieUnavailableException("Failed to retrieve new LTI Session from cookie. User must change their cookie settings.");
         }

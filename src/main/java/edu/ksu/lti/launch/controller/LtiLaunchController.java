@@ -3,8 +3,8 @@ package edu.ksu.lti.launch.controller;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.security.CanvasInstanceChecker;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
  * up its content.
  */
 public abstract class LtiLaunchController {
-    private static final Logger LOG = LogManager.getLogger(LtiLaunchController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LtiLaunchController.class);
     @Autowired
     private CanvasInstanceChecker instanceChecker;
 
