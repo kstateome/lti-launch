@@ -9,6 +9,8 @@ import edu.ksu.lti.launch.spring.config.TestSpringConfig;
 import edu.ksu.lti.launch.controller.TestLtiLaunchController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,6 +27,8 @@ import static org.junit.Assert.assertNotNull;
 @WebAppConfiguration
 @ContextConfiguration(classes = {TestSpringConfig.class, TestApplicationConfig.class})
 public class SpringContextITest {
+    private static final Logger LOG = LoggerFactory.getLogger(SpringContextITest.class);
+
     @Autowired
     private TestLtiLaunchController testLtiLaunchController;
     @Autowired
@@ -36,6 +40,7 @@ public class SpringContextITest {
 
     @Test
     public void testSpringContext() {
+        LOG.info("Verifying Spring context");
         //The test will fail if the spring context is not setup appropriately.
         assertNotNull("Expected testLtiLaunchController to be instantiated by Spring", testLtiLaunchController);
         assertNotNull("Expected oauthController to be instantiated by Spring", oauthController);

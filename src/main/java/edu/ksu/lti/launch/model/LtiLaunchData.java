@@ -1,8 +1,8 @@
 package edu.ksu.lti.launch.model;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class LtiLaunchData {
 
-    private static final Logger LOG = LogManager.getLogger(LtiLaunchData.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LtiLaunchData.class);
 
     private String ltiVersion;
     private String contextLabel;
@@ -343,7 +343,7 @@ public class LtiLaunchData {
     }
 
     public void setRoles(String roles) {
-        LOG.debug("got LTI roles: " + roles);
+        LOG.debug("got LTI roles: {}", roles);
         this.roles = roles;
 
         List<InstitutionRole> list = new ArrayList<>();
