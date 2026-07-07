@@ -54,13 +54,13 @@
     <properties>
         <java.version>17</java.version>
         <log4j2.version>2.25.4</log4j2.version>
-        <spring.version>6.2.18</spring.version>
-        <spring-security.version>6.5.10</spring-security.version>
+        <spring.version>6.2.19</spring.version>
+        <spring-security.version>6.5.11</spring-security.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
         <canvas-api.version>3.0.0-SNAPSHOT</canvas-api.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <gson.version>2.14.0</gson.version>
-        <jstl.version>1.2</jstl.version>
+        <jakarta.jstl.version>3.0.1</jakarta.jstl.version>
         <junit.version>4.13.2</junit.version>
         <mockito.version>5.23.0</mockito.version>
         <!-- Plugin versions -->
@@ -74,6 +74,8 @@
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
         <dependency-check-maven.version>12.2.1</dependency-check-maven.version>
         <error_prone_annotations.version>2.48.0</error_prone_annotations.version>
+        <slf4j.version>2.0.17</slf4j.version>
+        <httpcomponents.core5.version>5.4.3</httpcomponents.core5.version>
         <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
         <skipITs>true</skipITs>
     </properties>
@@ -405,6 +407,21 @@
                 <artifactId>error_prone_annotations</artifactId>
                 <version>${error_prone_annotations.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>${httpcomponents.core5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5-h2</artifactId>
+                <version>${httpcomponents.core5.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -457,9 +474,14 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <version>${jstl.version}</version>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>${jakarta.jstl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>${jakarta.jstl.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -38,6 +38,9 @@ public class LtiLaunchSecurityConfig {
         private LtiLaunchKeyService ltiLaunchKeyService;
 
         @Autowired
+        private LtiLaunchOAuth1AuthenticationFilter ltiLaunchOAuth1AuthenticationFilter;
+
+        @Autowired
         private ConfigService configService;
 
         @Bean
@@ -49,7 +52,7 @@ public class LtiLaunchSecurityConfig {
                 throw new RuntimeException("Missing canvas_url config value");
             }
             http.securityMatcher("/launch")
-                .addFilterBefore(new LtiLaunchOAuth1AuthenticationFilter(ltiLaunchKeyService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(ltiLaunchOAuth1AuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> {
@@ -65,6 +68,11 @@ public class LtiLaunchSecurityConfig {
                 });
 
             return http.build();
+        }
+
+        @Bean
+        public LtiLaunchOAuth1AuthenticationFilter ltiLaunchOAuth1AuthenticationFilter() {
+            return new LtiLaunchOAuth1AuthenticationFilter(ltiLaunchKeyService);
         }
     }
 }
