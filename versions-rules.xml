@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is used by the Maven Versions Plugin to ignore certain versions when checking for updates.
+Example usage in a Maven command:
+mvn versions:update-properties -DallowIncrementalUpdates=true -DallowMajorUpdates=false -DallowMinorUpdates=true -DallowPreReleases=false -Dmaven.version.rules=file://$PWD/versions-rules.xml
+-->
 <ruleset xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0
