@@ -1,8 +1,7 @@
 package edu.ksu.lti.launch.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import edu.ksu.canvas.oauth.OauthTokenRefresher;
+import edu.ksu.canvas.oauth.OauthToken;
 import edu.ksu.canvas.oauth.RefreshableOauthToken;
 import edu.ksu.lti.launch.exception.CookieUnavailableException;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
@@ -12,18 +11,22 @@ import edu.ksu.lti.launch.service.LtiSessionService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -36,16 +39,25 @@ import java.util.UUID;
 @Controller
 public class OauthController {
     private static final Logger LOG = LogManager.getLogger(OauthController.class);
+    private static final String CANVAS_REGISTRATION_ID = "canvas";
 
     private final ConfigService configService;
     private final OauthTokenService oauthTokenService;
     private final LtiSessionService ltiSessionService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> oauth2AccessTokenResponseClient;
 
     @Autowired
-    private OauthController(ConfigService configService, OauthTokenService oauthTokenService, LtiSessionService ltiSessionService) {
+    OauthController(ConfigService configService,
+                    OauthTokenService oauthTokenService,
+                    LtiSessionService ltiSessionService,
+                    ClientRegistrationRepository clientRegistrationRepository,
+                    OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> oauth2AccessTokenResponseClient) {
         this.configService = configService;
         this.oauthTokenService = oauthTokenService;
         this.ltiSessionService = ltiSessionService;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+        this.oauth2AccessTokenResponseClient = oauth2AccessTokenResponseClient;
     }
 
     @RequestMapping("/beginOauth")
@@ -59,27 +71,24 @@ public class OauthController {
             throw new CookieUnavailableException("Failed to retrieve new LTI Session from cookie. User must change their cookie settings.");
         }
         LOG.debug("Sending user " + ltiSession.getEid() + " to get oauth token at " + ltiSession.getCanvasDomain());
-        String oauthClientId = configService.getConfigValue("oauth_client_id");
+        ClientRegistration clientRegistration = getCanvasClientRegistration();
         
         String randomUuid = UUID.randomUUID().toString();
         ltiSession.setOauthTokenRequestState(randomUuid);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("redirect:");
-        sb.append("https://");
-        sb.append(ltiSession.getCanvasDomain());
-        sb.append("/login/oauth2/auth");
-        sb.append("?");
-        sb.append("client_id=");
-        sb.append(oauthClientId);
-        sb.append("&state=");
-        sb.append(randomUuid);
-        sb.append("&response_type=code");
-        sb.append("&redirect_uri=");
-        sb.append(getApplicationBaseUrl(request, true));
-        sb.append("/oauthResponse");
-        LOG.debug("returning from start oauth: " + sb.toString());
-        return sb.toString();
+        String redirectUri = getApplicationBaseUrl(request, true) + "/oauthResponse";
+        OAuth2AuthorizationRequest.Builder authorizationBuilder = OAuth2AuthorizationRequest.authorizationCode()
+            .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
+            .clientId(clientRegistration.getClientId())
+            .redirectUri(redirectUri)
+            .state(randomUuid);
+        if (!clientRegistration.getScopes().isEmpty()) {
+            authorizationBuilder.scopes(clientRegistration.getScopes());
+        }
+
+        String authorizationRequestUri = authorizationBuilder.build().getAuthorizationRequestUri();
+        LOG.debug("returning from start oauth: redirect:" + authorizationRequestUri);
+        return "redirect:" + authorizationRequestUri;
     }
 
     @RequestMapping("/oauthResponse")
@@ -101,65 +110,71 @@ public class OauthController {
         	throw new RuntimeException(msg);
         }
         
-        String canvasUrl = configService.getConfigValue("canvas_url");
-        String oauthClientId = configService.getConfigValue("oauth_client_id");
-        String oauthClientSecret = configService.getConfigValue("oauth_client_secret");
-        if(oauthCode != null && !oauthCode.trim().isEmpty()) {
+        if(StringUtils.isNotBlank(oauthCode)) {
             try {
                 LOG.debug("got oauth code back: " + oauthCode);
-                URL tokenUrl = new URL(canvasUrl + "/login/oauth2/token");
-                HttpURLConnection con = (HttpURLConnection)tokenUrl.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                OutputStream out = con.getOutputStream();
-                StringBuilder paramsBuilder = new StringBuilder();
-                paramsBuilder.append("client_id=");
-                paramsBuilder.append(oauthClientId);
-                paramsBuilder.append("&client_secret=");
-                paramsBuilder.append(oauthClientSecret);
-                paramsBuilder.append("&code=");
-                paramsBuilder.append(oauthCode);
-                paramsBuilder.append("&redirect_uri=");
-                paramsBuilder.append(getApplicationBaseUrl(request, true));
-                paramsBuilder.append("/oauthResponse");
-                LOG.debug("sending params to get oauth token: " + paramsBuilder.toString());
-                out.write(paramsBuilder.toString().getBytes());
-                out.flush();
-                out.close();
-
-                int responseCode = con.getResponseCode();
-                LOG.debug("got response code from token request: " + responseCode);
-                LOG.debug("response message: " + con.getResponseMessage());
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer content = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine);
-                }
-                LOG.debug("content: " + content.toString());
-                JsonObject jobj = new Gson().fromJson(content.toString(), JsonObject.class);
-                String accessToken = jobj.get("access_token").getAsString();
-                String refreshToken = jobj.get("refresh_token").getAsString();
+                ClientRegistration clientRegistration = getCanvasClientRegistration();
+                String redirectUri = getApplicationBaseUrl(request, true) + "/oauthResponse";
+                OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest.authorizationCode()
+                    .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
+                    .clientId(clientRegistration.getClientId())
+                    .redirectUri(redirectUri)
+                    .state(state)
+                    .build();
+                OAuth2AuthorizationResponse authorizationResponse = OAuth2AuthorizationResponse.success(oauthCode)
+                    .redirectUri(redirectUri)
+                    .state(state)
+                    .build();
+                OAuth2AuthorizationCodeGrantRequest grantRequest = new OAuth2AuthorizationCodeGrantRequest(
+                    clientRegistration,
+                    new OAuth2AuthorizationExchange(authorizationRequest, authorizationResponse));
+                OAuth2AccessTokenResponse tokenResponse = oauth2AccessTokenResponseClient.getTokenResponse(grantRequest);
+                String accessToken = tokenResponse.getAccessToken().getTokenValue();
+                String refreshToken = tokenResponse.getRefreshToken() != null ? tokenResponse.getRefreshToken().getTokenValue() : null;
                 String eID = ltiSession.getEid();
                 LOG.debug("access token for eid " + eID + ": " + accessToken);
                 LOG.debug("refresh token for eid " + eID + ": " + refreshToken);
-                
-                String token = oauthTokenService.getRefreshToken(eID);
-                if (token == null) {
-                    oauthTokenService.storeToken(eID, refreshToken);
-                } else {
-                    oauthTokenService.updateToken(eID, refreshToken);
-                }
-                OauthTokenRefresher tokenRefresher = new OauthTokenRefresher(oauthClientId, oauthClientSecret, canvasUrl);
-                ltiSession.setOauthToken(new RefreshableOauthToken(tokenRefresher, refreshToken));
 
+                if (StringUtils.isNotBlank(refreshToken)) {
+                    String canvasUrl = configService.getConfigValue("canvas_url");
+                    String token = oauthTokenService.getRefreshToken(eID);
+                    if (token == null) {
+                        oauthTokenService.storeToken(eID, refreshToken);
+                    } else {
+                        oauthTokenService.updateToken(eID, refreshToken);
+                    }
+
+                    // Keep existing canvas-api integration behavior by wrapping refresh token.
+                    ltiSession.setOauthToken(createRefreshableOauthToken(
+                        clientRegistration.getClientId(),
+                        clientRegistration.getClientSecret(),
+                        canvasUrl,
+                        refreshToken));
+                } else {
+                    LOG.warn("No refresh_token returned by Canvas for user {}", eID);
+                }
             }
-            catch(IOException e) {
+            catch(OAuth2AuthorizationException e) {
+                LOG.error("error getting oauth token", e);
+            }
+            catch(RuntimeException e) {
                 LOG.error("error getting oauth token", e);
             }
         }
         return "redirect:" + ltiSession.getInitialViewPath();
+    }
+
+    private ClientRegistration getCanvasClientRegistration() {
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(CANVAS_REGISTRATION_ID);
+        if (clientRegistration == null) {
+            throw new RuntimeException("Canvas OAuth2 client registration is not configured");
+        }
+        return clientRegistration;
+    }
+
+    protected OauthToken createRefreshableOauthToken(String clientId, String clientSecret, String canvasUrl,
+                                                     String refreshToken) {
+        return new RefreshableOauthToken(new OauthTokenRefresher(clientId, clientSecret, canvasUrl), refreshToken);
     }
 
     /** Returns the base URL of this application. This includes scheme, hostname

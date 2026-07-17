@@ -4,12 +4,18 @@ LTI Launch is a project designed to assist in the development of Java based LTI 
 
 ### Technologies Used
 
-- Java 11
-- Maven (Compatible with 3.5.2, requires 3.1+)
-- Spring MVC 4.1.6
-- Spring Security OAuth
+- Java 21
+- Maven 3.9+
+- Spring Framework 6 (Spring MVC)
+- Spring Security 6 with a custom OAuth 1.0a launch filter for `/launch`
 - Google GSON
 - Apache HTTP Client
+
+### Migration Notes (JDK 21 / Jakarta)
+
+- Servlet APIs now use `jakarta.servlet.*` (not `javax.servlet.*`).
+- LTI launch authentication is handled by `LtiLaunchOAuth1AuthenticationFilter` in `src/main/java/edu/ksu/lti/launch/security/LtiLaunchOAuth1AuthenticationFilter.java`.
+- `LtiLaunchSecurityConfig` wires that filter into the `/launch` Spring Security chain.
 
 ### Set Up
 
