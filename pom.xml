@@ -78,6 +78,7 @@
         <httpcomponents.core5.version>5.4.3</httpcomponents.core5.version>
         <!-- Skip integration tests by default. They are enabled by an integration test specific profile -->
         <skipITs>true</skipITs>
+        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     </properties>
 
     <build>
@@ -85,7 +86,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>5.5.0.6356</version>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
