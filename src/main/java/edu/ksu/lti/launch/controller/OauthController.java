@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
+import java.util.Set;
 
 /**
  * Controller for obtaining an oauth token for a user. It redirects the 
@@ -82,8 +83,9 @@ public class OauthController {
             .clientId(clientRegistration.getClientId())
             .redirectUri(redirectUri)
             .state(randomUuid);
-        if (!clientRegistration.getScopes().isEmpty()) {
-            authorizationBuilder.scopes(clientRegistration.getScopes());
+        Set<String> scopes = clientRegistration.getScopes();
+        if (scopes != null && !scopes.isEmpty()) {
+            authorizationBuilder.scopes(scopes);
         }
 
         String authorizationRequestUri = authorizationBuilder.build().getAuthorizationRequestUri();
