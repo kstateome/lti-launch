@@ -94,5 +94,56 @@ public class OauthControllerUTest {
         Assert.assertEquals("auth-code",
             grantCaptor.getValue().getAuthorizationExchange().getAuthorizationResponse().getCode());
     }
-}
 
+    @Test
+    public void startOauthHandlesRegistrationWithoutScopes() throws Exception {
+        ConfigService configService = mock(ConfigService.class);
+        OauthTokenService oauthTokenService = mock(OauthTokenService.class);
+        LtiSessionService ltiSessionService = mock(LtiSessionService.class);
+        ClientRegistrationRepository clientRegistrationRepository = mock(ClientRegistrationRepository.class);
+        @SuppressWarnings("unchecked")
+        OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> tokenClient =
+            mock(OAuth2AccessTokenResponseClient.class);
+
+        OauthController controller = new OauthController(
+            configService,
+            oauthTokenService,
+            ltiSessionService,
+            clientRegistrationRepository,
+            tokenClient
+        ) {
+            @Override
+            protected OauthToken createRefreshableOauthToken(String clientId, String clientSecret, String canvasUrl,
+                                                             String refreshToken) {
+                return mock(OauthToken.class);
+            }
+        };
+
+        LtiSession ltiSession = new LtiSession();
+        ltiSession.setEid("eid1");
+        ltiSession.setCanvasDomain("canvas.example.edu");
+        when(ltiSessionService.getLtiSession()).thenReturn(ltiSession);
+
+        ClientRegistration registration = ClientRegistration.withRegistrationId("canvas")
+            .clientId("client-id")
+            .clientSecret("client-secret")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationUri("https://canvas.example.edu/login/oauth2/auth")
+            .tokenUri("https://canvas.example.edu/login/oauth2/token")
+            .redirectUri("{baseUrl}/oauthResponse")
+            .build();
+        when(clientRegistrationRepository.findByRegistrationId("canvas")).thenReturn(registration);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme("https");
+        request.setServerName("app.example.edu");
+        request.setServerPort(443);
+        request.setContextPath("/lti");
+
+        String result = controller.startOauth(request);
+
+        Assert.assertTrue(result.startsWith("redirect:https://canvas.example.edu/login/oauth2/auth"));
+        Assert.assertNotNull(ltiSession.getOauthTokenRequestState());
+    }
+}
